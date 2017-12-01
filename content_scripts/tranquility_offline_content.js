@@ -135,6 +135,12 @@ function displayDocFromDB(cached_doc, thisURL) {
     let btn = document.getElementById('tranquility_offline_links_btn');
     btn.setAttribute('data-active-link', thisURL);
 
+    // Remove the progress bar; don't need it any longer
+    let pbar = document.getElementById("tranquility_progress_bar");
+    if (pbar) {
+        pbar.parentNode.removeChild(pbar);
+    }
+
     addBackEventListeners();
     hideMenuDiv(document);
 }
@@ -161,7 +167,8 @@ function displayExportLink(offline_data) {
     let output_str = JSON.stringify(offline_data);
     let dataUri = 'data:application/json;charset=utf-8,'+ encodeURIComponent(output_str);
 
-    let dtStr = offline_data["export_date"].toISOString();
+    let dt = new Date();
+    let dtStr = dt.toISOString();
     dtStr = dtStr.replace(/\-/g, "").replace(/T/, "_").replace(/\:/g, "").substr(0,15);
     let export_file_name = "tranquility_export_data_" +  dtStr + ".json";
     

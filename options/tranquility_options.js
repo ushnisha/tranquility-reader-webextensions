@@ -126,5 +126,81 @@ function initializeOption(opt_name) {
     }
 }
 
+function loadPresetFormats() {
+    
+    
+    let idx = document.getElementById("tranquility_preset_combination").selectedIndex;
+    let selOpt = document.getElementById("tranquility_preset_combination").options[idx].value;
+    
+    if (selOpt == "default") {
+        document.getElementById("tranquility_background_color").value = "#FFFFFF";
+        document.getElementById("tranquility_font_color").value = "#000000";
+        document.getElementById("tranquility_link_color").value = "#0000FF";
+        document.getElementById("tranquility_annotation_highlight_color").value = "#FFFF99";
+        document.getElementById("tranquility_font_name").value = "Georgia";
+        document.getElementById("tranquility_font_size").value = "22";
+        document.getElementById("tranquility_reading_width").value = "55";
+        document.getElementById("tranquility_line_height").value = "140";
+        document.getElementById("tranquility_text_align").selectedItem = "left";
+    }
+    else if (selOpt == "dark") {
+        document.getElementById("tranquility_background_color").value = "#000000";
+        document.getElementById("tranquility_font_color").value = "#FFFFFF";
+        document.getElementById("tranquility_link_color").value = "#0000FF";
+        document.getElementById("tranquility_annotation_highlight_color").value = "#FFFF99";
+        document.getElementById("tranquility_font_name").value = "Georgia";
+        document.getElementById("tranquility_font_size").value = "22";
+        document.getElementById("tranquility_reading_width").value = "55";
+        document.getElementById("tranquility_line_height").value = "140";
+        document.getElementById("tranquility_text_align").selectedItem = "left";
+    }
+    else if (selOpt == "matrix") {
+        document.getElementById("tranquility_background_color").value = "#000000";
+        document.getElementById("tranquility_font_color").value = "#006400";
+        document.getElementById("tranquility_link_color").value = "#0000FF";
+        document.getElementById("tranquility_annotation_highlight_color").value = "#FFFF99";
+        document.getElementById("tranquility_font_name").value = "Courier";
+        document.getElementById("tranquility_font_size").value = "22";
+        document.getElementById("tranquility_reading_width").value = "55";
+        document.getElementById("tranquility_line_height").value = "140";
+        document.getElementById("tranquility_text_align").selectedItem = "left";
+    }
+    else if (selOpt == "highcontrastlargefont") {
+        document.getElementById("tranquility_background_color").value = "#000000";
+        document.getElementById("tranquility_font_color").value = "#FFFFFF";
+        document.getElementById("tranquility_link_color").value = "#0000FF";
+        document.getElementById("tranquility_annotation_highlight_color").value = "#FFFF99";
+        document.getElementById("tranquility_font_name").value = "Verdana";
+        document.getElementById("tranquility_font_size").value = "54";
+        document.getElementById("tranquility_reading_width").value = "75";
+        document.getElementById("tranquility_line_height").value = "140";
+        document.getElementById("tranquility_text_align").selectedItem = "left";
+    }
+    
+    if (selOpt !== "custom") {
+        document.getElementById("tranquility_save_changes").click();
+    }
+}
+
+function callExportTranquilityOfflinePages() {
+    browser.runtime.sendMessage(
+      {
+          "action": "RunTranquilityExportOfflinePages"
+      });
+    window.close();
+}
+
+function callImportTranquilityOfflinePages() {
+    browser.runtime.sendMessage(
+      {
+          "action": "RunTranquilityImportOfflinePages"
+      });
+    window.close();
+}
+
+
 document.addEventListener("DOMContentLoaded", restoreOptions);
 document.getElementById("tranquility_save_changes").addEventListener("click", saveOptions);
+document.getElementById("tranquility_export_offline_pages").addEventListener("click", callExportTranquilityOfflinePages);
+document.getElementById("tranquility_import_offline_pages").addEventListener("click", callImportTranquilityOfflinePages);
+document.getElementById("tranquility_preset_combination").addEventListener("change", loadPresetFormats);

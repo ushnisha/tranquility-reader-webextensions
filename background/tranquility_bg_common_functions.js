@@ -2,9 +2,13 @@
 
 var browser = browser || chrome;
 
+function browserAction() {
+    runTranquility("Run");
+}
+
 function runTranquility(mode) {
-    
     console.log("Entered runTranquility at: " + new Date());
+    console.log("Run Mode: " + mode);
     browser.tabs.query({active: true, currentWindow: true}, function(tabs) {
         let active_tab = tabs[0];
         console.log(active_tab.id);
@@ -90,13 +94,10 @@ function displayTranquilityOfflinePages() {
         }
     };
         
-    // url: "about:blank" not supported in Firefox 52
-    // will change this once Firefox 53 is out
-    //
     let updating = browser.tabs.create(
         {
             active: true, 
-            url: "http://www.mozilla.org"
+            url: "about:blank"
         }, onUpdate);    
 }
 
@@ -119,7 +120,7 @@ function exportTranquilityOfflinePages() {
     let updating = browser.tabs.create(
         {
             active: true, 
-            url: "http://www.mozilla.org"
+            url: "about:blank"
         }, onUpdate);
             
 }
@@ -142,7 +143,7 @@ function importTranquilityOfflinePages() {
     let updating = browser.tabs.create(
         {
             active: true, 
-            url: "http://www.mozilla.org"
+            url: "about:blank"
         }, onUpdate);
     
 }
@@ -184,7 +185,7 @@ function handleInstalled(details) {
     console.log(details);
     
     let options_list = {"tranquility_background_color"              : "#FFFFFF", 
-                        "tranquility_font_color"                    : "000000", 
+                        "tranquility_font_color"                    : "#000000", 
                         "tranquility_link_color"                    : "#0000FF", 
                         "tranquility_annotation_highlight_color"    : "#FFFF99",
                         "tranquility_font_name"                     : "Georgia", 
@@ -230,5 +231,5 @@ function initializeOption(opt_name, opt_value) {
     let getting = browser.storage.local.get(opt_name, onGettingSuccess);
 }
 
-
+browser.browserAction.onClicked.addListener(browserAction);
 browser.runtime.onInstalled.addListener(handleInstalled);

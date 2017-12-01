@@ -24,6 +24,22 @@
   background-color:#E6E6FA;
 }
 
+.tranquility_export_offline_pages {
+  text-align: center; 
+  border: 1px solid #808080; 
+  font-size: 1em;
+  flex:0 0 20%; 
+  background-color:#E6E6FA;
+}
+
+.tranquility_import_offline_pages {
+  text-align: center; 
+  border: 1px solid #808080; 
+  font-size: 1em;
+  flex:0 0 20%; 
+  background-color:#E6E6FA;
+}
+
 .tranquility_options_row:hover {
   background-color: #B0C4DE;
 }

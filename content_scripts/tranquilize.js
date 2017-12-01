@@ -3,7 +3,7 @@
  * 
  */
 
- 'use strict';
+'use strict';
 var browser = browser || chrome;
 var currentURL = null;
 
@@ -51,22 +51,30 @@ function tranquilize(request, sender, sendResponse) {
 function RunOnLoad() {
     currentURL = location.toString();
     // If we have already run tranquility, then just toggle back to the original webpage (un-tranquilize the page)
-    if (document.readyState == "complete" && document.body.getElementsByClassName("tranquility").length > 0) {
-        //window.location.reload();
-        window.location = currentURL;
-        return;
+    if (document.body.getElementsByClassName("tranquility").length > 0) {
+        // If this is an offline link, we need to get the data-active-link of the tranquility_offline_links_btn
+        let btn = document.getElementById('tranquility_offline_links_btn');
+        let url = null;
+        if(btn.getAttribute('data-active-link')) {
+            url = btn.getAttribute('data-active-link');
+        }
+        else {
+            url = currentURL;
+        }
+        window.location.assign(url);
     }
-    
     // If tranquility has not been run, then "tranquilize" the document
-    if(document.readyState != "complete") {
-        window.stop();
+    else {
+        // Stop loading the document if it has not completed loading
+        if(document.readyState != "complete") {
+            window.stop();
+        }
+        // Show a progress-bar to indicate activity and then process the request
+        // bar will automatically disappear since the document will be replaced
+        let pbar = getProgressBar(document);
+        pbar.style.visibility = 'visible';
+        processXMLHTTPRequest(currentURL, false);
     }
-    
-    // Show a progress-bar to indicate activity and then process the request
-    // bar will automatically disappear since the document will be replaced
-    let pbar = getProgressBar(document);
-    pbar.style.visibility = 'visible';
-    processXMLHTTPRequest(currentURL, false);
 }
 
 function RunAndSaveOnLoad() {
@@ -88,6 +96,12 @@ function RunAndSaveOnLoad() {
 }
 
 function processXMLHTTPRequest(url, saveOffline) {
+
+    // Handle corner case to avoid mixed content security warnings/errors
+    let getURL = url;
+    if (location.toString().substr(5) == 'https') {
+        getURL = getURL.replace(/^http\:/, 'https:');
+    }
 
     let oXHR = new XMLHttpRequest();
     oXHR.onreadystatechange = function() {
@@ -113,7 +127,7 @@ function processXMLHTTPRequest(url, saveOffline) {
         }        
     };
     console.log(url);
-    oXHR.open("GET", url, true);
+    oXHR.open("GET", getURL, true);
     oXHR.send(null);
 }
           
@@ -303,6 +317,7 @@ function processResponse (oXHRDoc, thisURL, saveOffline) {
     //
     let offline_button_div = createNode(contentDoc, {type: 'DIV', attr: { class:'tranquility_offline_links_btn', id:'tranquility_offline_links_btn' } });
     offline_button_div.textContent = browser.i18n.getMessage("offlinelinks");
+    offline_button_div.setAttribute('data-active-link', thisURL);
     menu_div.appendChild(offline_button_div);
 
     let offline_links_div = createNode(contentDoc, {type: 'DIV', attr: { class:'tranquility_offline_links', id:'tranquility_offline_links' } });
@@ -557,6 +572,15 @@ function reformatTag(cdoc, tagString) {
         c[i].removeAttribute('style');
         c[i].removeAttribute('width');
         c[i].setAttribute('class', 'tranquility');
+        
+        // Exception for the preformatted text so that we can
+        // apply only some of the formatting changes to preformatted text
+        // for example, fontName must not be changes so that we have an
+        // equal width character font for code readability, etc
+        // 
+        if (c[i].nodeName == "PRE") {
+            c[i].setAttribute('class', 'tranquility_pre');
+        }
     }
 }
 

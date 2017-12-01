@@ -46,7 +46,8 @@ div.tranquility
   font-family:Univers,Scala,Georgia,Verdana,Times,Helvetica; 
   text-align:justify;
   line-height:140%;  
-  padding-bottom: 1px;
+  padding-top: 5px;
+  padding-bottom: 5px;
 } 
 
 div.tranquility_links
@@ -140,13 +141,13 @@ p.tranquility
   line-height:140%;  
 } 
 
-pre.tranquility
+pre.tranquility_pre
 {
-  font-family:Univers,Scala,Georgia,Verdana,Times,Helvetica; 
   width: 100%;
   overflow: auto;
   line-height:140%;  
   white-space: pre-wrap;
+  word-break: keep-all;
 }
 
 li.tranquility 
