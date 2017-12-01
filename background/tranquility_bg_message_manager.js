@@ -48,8 +48,14 @@ let processMessage = function (message) {
 
 browser.runtime.onMessage.addListener(processMessage);
 
-browser.commands.onCommand.addListener(function(command) {
-    if (command == "run-tranquility") {
-        runTranquility("Run");
+// browser.commands API not supported on AndroidOS
+//
+let gettingInfo = browser.runtime.getPlatformInfo(function (info) {
+    if (info.os != "android") {
+        browser.commands.onCommand.addListener(function(command) {
+            if (command == "run-tranquility") {
+                runTranquility("Run");
+            }
+        });
     }
 });

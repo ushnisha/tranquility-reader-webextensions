@@ -59,8 +59,14 @@ function insertContentScriptsAndCSSAndAction(tabId, action) {
                 // future normal loads of the page.  I am unable to figure out a way to
                 // restore the original zoom in a straightforward manner given that
                 // we support a tranquil browsing mode.
+                // setZoom is not supported on AndroidOS
                 //
-                setZoom(1);
+
+                let gettingInfo = browser.runtime.getPlatformInfo(function (info) {
+                    if (info.os != "android") {
+                        setZoom(1);
+                    }
+                });
                 
                 // Send message to run tranquility (or other appropriate action that the content scripts
                 // will handle
@@ -194,15 +200,24 @@ function handleInstalled(details) {
                         "tranquility_line_height"                   : "140", 
                         "tranquility_text_align"                    : "Left"
     };
-      
-    let option_keys = Object.keys(options_list);
-    
-    for (let opt=0; opt < option_keys.length; opt++) {
 
-        let opt_name = option_keys[opt];
-        let opt_value = options_list[opt_name];
-        initializeOption(opt_name, opt_value);        
-  }
+    // Android specific overrides to options
+    //
+    let gettingInfo = browser.runtime.getPlatformInfo(function (info) {
+
+        if (info.os == "android") {
+            options_list["tranquility_font_size"] = "15";
+            options_list["tranquility_reading_width"] = "95";
+        }
+      
+        let option_keys = Object.keys(options_list);
+    
+        for (let opt=0; opt < option_keys.length; opt++) {
+            let opt_name = option_keys[opt];
+            let opt_value = options_list[opt_name];
+            initializeOption(opt_name, opt_value);
+        }
+    });
   
 }
 

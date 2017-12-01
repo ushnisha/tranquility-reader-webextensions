@@ -409,3 +409,33 @@ div.tranquility_progress_bar
   border-right: solid 2px silver;
   border-radius: 5px; 
 }
+
+/* media overrides for smaller screens
+   added as part of supporting AndroidOS
+*/
+@media (max-width: 600px) {
+   div.tranquility_links {
+     font-size: 15px;
+   }
+   div.tranquility_offline_links {
+     font-size: 15px;
+   }
+   div.tranquility_more_links_btn {
+     font-size: 15px;
+   }
+   div.tranquility_read_later_btn {
+     font-size: 15px;
+   }
+   div.tranquility_offline_links_btn {
+     font-size: 15px;
+   }
+   div.tranquility_viewnotes_btn {
+     font-size: 15px;
+   }
+   div.tranquility_expand_menu_btn {
+     font-size: 15px;
+   }
+   span.tranquility_annotation {
+     font-size: 15px;
+   }
+}

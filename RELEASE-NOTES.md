@@ -1,3 +1,18 @@
+## Version 3.0.5:
+
+* Changes for limited support on Firefox for AndroidOS
+
+* Only the browserAction (running Tranquility on a web page 
+  by selecting the browser menu option) is available on AndroidOS
+
+* No command shortcuts or right click context menus provided on AndroidOS
+
+* Currently no ability to to import/export the offline pages on AndroidOS
+
+* Changes to css/default options for AndroidOS/smaller screen devices. 
+
+--------------------------------
+
 ## Version 3.0.4: 
 
 * Removed popup menu for the browser action; now, clicking on 
