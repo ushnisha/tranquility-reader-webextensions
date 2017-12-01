@@ -37,6 +37,9 @@ let processMessage = function (message) {
     else if (message.action == "RunTranquilityImportOfflinePages") {
         importTranquilityOfflinePages();
     }
+    else if (message.action == "AllTabsUpdateTranquilityPreferences") {
+        allTabsUpdateTranquilityPreferences();
+    }
     else if (message.action == "loadLinkInTranquilBrowsingMode") {
         console.log("Trying to browse in tranquil browsing mode: " + message.url);
         loadLinkAndRunTranquility(message.url, "Run");

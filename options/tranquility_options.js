@@ -4,19 +4,56 @@ var browser = browser || chrome;
 
 function saveOptions(e) {
     e.preventDefault();
-    browser.storage.local.set(
-    {
-    tranquility_background_color:           document.getElementById("tranquility_background_color").value,
-    tranquility_font_color:                 document.getElementById("tranquility_font_color").value,
-    tranquility_link_color:                 document.getElementById("tranquility_link_color").value,
-    tranquility_annotation_highlight_color: document.getElementById("tranquility_annotation_highlight_color").value,
-    tranquility_font_name:                  document.getElementById("tranquility_font_name").value,
-    tranquility_font_size:                  document.getElementById("tranquility_font_size").value,
-    tranquility_reading_width:              document.getElementById("tranquility_reading_width").value,
-    tranquility_line_height:                document.getElementById("tranquility_line_height").value,
-    tranquility_text_align:                 document.getElementById("tranquility_text_align").value    
-    });
 
+    let current_settings = {
+        tranquility_background_color:           document.getElementById("tranquility_background_color").value,
+        tranquility_font_color:                 document.getElementById("tranquility_font_color").value,
+        tranquility_link_color:                 document.getElementById("tranquility_link_color").value,
+        tranquility_annotation_highlight_color: document.getElementById("tranquility_annotation_highlight_color").value,
+        tranquility_font_name:                  document.getElementById("tranquility_font_name").value,
+        tranquility_font_size:                  document.getElementById("tranquility_font_size").value,
+        tranquility_reading_width:              document.getElementById("tranquility_reading_width").value,
+        tranquility_line_height:                document.getElementById("tranquility_line_height").value,
+        tranquility_text_align:                 document.getElementById("tranquility_text_align").value    
+    };
+
+    // First save all of the current settings in the individual options
+    browser.storage.local.set(current_settings);
+
+    // Now check to see if a preset name is created, in which case save the preset
+    let custom_name = document.getElementById("tranquility_custom_preset_name").value;
+
+    if (custom_name !== "") {
+        let onGetting = function(result) {
+            if (browser.runtime.lastError) {
+                console.log(browser.runtime.lastError);
+            }
+            else {
+                let tranquility_presets = JSON.parse(result.tranquility_presets);
+                tranquility_presets[custom_name] = current_settings;
+                browser.storage.local.set({"tranquility_presets" : JSON.stringify(tranquility_presets)});
+
+                // Update the select option to include this new preset
+                let presetSelect = document.getElementById("tranquility_preset_combination");
+                let opt = document.createElement('option');
+                opt.value = custom_name;
+                opt.text = custom_name;
+                presetSelect.appendChild(opt);
+
+                // Finally clear the preset name text box
+                document.getElementById("tranquility_custom_preset_name").value = "";
+            }
+        }
+        let getting_presets = browser.storage.local.get("tranquility_presets", onGetting);
+    }
+   
+    // Send a message to instruct all tabs to update their tranquility view to use the new
+    // preferences
+    browser.runtime.sendMessage(
+      {
+          "action": "AllTabsUpdateTranquilityPreferences"
+      });
+ 
     // Clear any prior alarms
     browser.alarms.clearAll();
 
@@ -33,7 +70,67 @@ function saveOptions(e) {
     });
 }
 
+function deletePreset(e) {
+    e.preventDefault();
+
+    // Now check to see if a preset name as specified exists, in which case delete the preset and
+    // remove it from the select options
+    
+    let custom_name = document.getElementById("tranquility_custom_preset_name").value;
+
+    if (custom_name !== "") {
+
+        let onGetting = function(result) {
+            if (browser.runtime.lastError) {
+                console.log(browser.runtime.lastError);
+            }
+            else {
+
+                let tranquility_presets = JSON.parse(result.tranquility_presets);
+                
+                // check if the custom preset exists and update the presets options object
+                if (custom_name in tranquility_presets) {
+                    delete tranquility_presets[custom_name];
+                    browser.storage.local.set({"tranquility_presets" : JSON.stringify(tranquility_presets)});
+                    // update the select options list to remove the deleted preset
+                    let presetSelect = document.getElementById("tranquility_preset_combination");
+                    for (let i = 0; i < presetSelect.length; i++) {
+                        if (presetSelect.options[i].value == custom_name) {
+                            presetSelect.remove(i);
+                            document.getElementById("tranquility_custom_preset_name").value = "";
+                            break;
+                        }
+                    }
+                }
+            }
+        }
+        let getting_presets = browser.storage.local.get("tranquility_presets", onGetting);
+    }
+}
+
+    
 function restoreOptions() {
+
+
+    let onGetting = function(result) {
+        if (browser.runtime.lastError) {
+            console.log(browser.runtime.lastError);
+        }
+        else {
+
+            let tranquility_presets = JSON.parse(result.tranquility_presets);
+            let presetSelect = document.getElementById("tranquility_preset_combination");
+            let presets = Object.keys(tranquility_presets);
+            for (let k = 0; k < presets.length; k++) {
+                let opt = document.createElement('option');
+                opt.value = presets[k];
+                opt.text = presets[k];
+                presetSelect.appendChild(opt);
+            }
+
+        }
+    }
+    let getting_presets = browser.storage.local.get("tranquility_presets", onGetting);
 
     let options_list = ["tranquility_background_color", "tranquility_font_color", 
                       "tranquility_link_color", "tranquility_annotation_highlight_color",
@@ -41,11 +138,7 @@ function restoreOptions() {
                       "tranquility_reading_width", "tranquility_line_height", 
                       "tranquility_text_align"];
 
-    // Default initialize form; then replace with values from storage.local, if exists  
-    for (let opt=0; opt < options_list.length; opt++) {
-        let opt_name = options_list[opt];
-        initializeOption(opt_name);
-    }
+    // Set forms with values from storage.local (should exist since these were set during installation)
 
     for (let opt=0; opt < options_list.length; opt++) {
 
@@ -85,7 +178,7 @@ function restoreOptions() {
                         document.getElementById(elem_name).value = result.tranquility_line_height || "140";
                     }
                     else if (opt_name == "tranquility_text_align") {
-                        document.getElementById(elem_name).selectedItem = result.tranquility_text_align;
+                        document.getElementById(elem_name).value = result.tranquility_text_align;
                     }
                 }
             }
@@ -95,91 +188,34 @@ function restoreOptions() {
   }
 }
 
-function initializeOption(opt_name) {
-    let elem_name = opt_name;
-    if (opt_name == "tranquility_background_color") {
-        document.getElementById(elem_name).value = "#FFFFFF";
-    }
-    else if (opt_name == "tranquility_font_color") {
-        document.getElementById(elem_name).value = "#000000";
-    }
-    else if (opt_name == "tranquility_link_color") {
-        document.getElementById(elem_name).value = "#0000FF";
-    }
-    else if (opt_name == "tranquility_annotation_highlight_color") {
-        document.getElementById(elem_name).value = "#FFFF99";
-    }
-    else if (opt_name == "tranquility_font_name") {
-        document.getElementById(elem_name).value = "Georgia";
-    }
-    else if (opt_name == "tranquility_font_size") {
-        document.getElementById(elem_name).value = "22";
-    }
-    else if (opt_name == "tranquility_reading_width") {
-        document.getElementById(elem_name).value = "55";
-    }
-    else if (opt_name == "tranquility_line_height") {
-        document.getElementById(elem_name).value = "140";
-    }
-    else if (opt_name == "tranquility_text_align") {
-        document.getElementById(elem_name).selectedItem = "left";
-    }
-}
-
 function loadPresetFormats() {
     
     
     let idx = document.getElementById("tranquility_preset_combination").selectedIndex;
     let selOpt = document.getElementById("tranquility_preset_combination").options[idx].value;
     
-    if (selOpt == "default") {
-        document.getElementById("tranquility_background_color").value = "#FFFFFF";
-        document.getElementById("tranquility_font_color").value = "#000000";
-        document.getElementById("tranquility_link_color").value = "#0000FF";
-        document.getElementById("tranquility_annotation_highlight_color").value = "#FFFF99";
-        document.getElementById("tranquility_font_name").value = "Georgia";
-        document.getElementById("tranquility_font_size").value = "22";
-        document.getElementById("tranquility_reading_width").value = "55";
-        document.getElementById("tranquility_line_height").value = "140";
-        document.getElementById("tranquility_text_align").selectedItem = "left";
+    let onGetting = function(result) {
+        if (browser.runtime.lastError) {
+            console.log(browser.runtime.lastError);
+        }
+        else {
+
+            let tranquility_presets = JSON.parse(result.tranquility_presets);
+            let selection = tranquility_presets[selOpt];
+            let opts = Object.keys(selection);
+            for (let k = 0; k < opts.length; k++) {
+                let opt = opts[k];
+                document.getElementById(opt).value = selection[opt];
+            }
+
+            if (selOpt !== "custom") {
+                document.getElementById("tranquility_save_changes").click();
+            }
+        }
     }
-    else if (selOpt == "dark") {
-        document.getElementById("tranquility_background_color").value = "#000000";
-        document.getElementById("tranquility_font_color").value = "#FFFFFF";
-        document.getElementById("tranquility_link_color").value = "#0000FF";
-        document.getElementById("tranquility_annotation_highlight_color").value = "#FFFF99";
-        document.getElementById("tranquility_font_name").value = "Georgia";
-        document.getElementById("tranquility_font_size").value = "22";
-        document.getElementById("tranquility_reading_width").value = "55";
-        document.getElementById("tranquility_line_height").value = "140";
-        document.getElementById("tranquility_text_align").selectedItem = "left";
-    }
-    else if (selOpt == "matrix") {
-        document.getElementById("tranquility_background_color").value = "#000000";
-        document.getElementById("tranquility_font_color").value = "#006400";
-        document.getElementById("tranquility_link_color").value = "#0000FF";
-        document.getElementById("tranquility_annotation_highlight_color").value = "#FFFF99";
-        document.getElementById("tranquility_font_name").value = "Courier";
-        document.getElementById("tranquility_font_size").value = "22";
-        document.getElementById("tranquility_reading_width").value = "55";
-        document.getElementById("tranquility_line_height").value = "140";
-        document.getElementById("tranquility_text_align").selectedItem = "left";
-    }
-    else if (selOpt == "highcontrastlargefont") {
-        document.getElementById("tranquility_background_color").value = "#000000";
-        document.getElementById("tranquility_font_color").value = "#FFFFFF";
-        document.getElementById("tranquility_link_color").value = "#0000FF";
-        document.getElementById("tranquility_annotation_highlight_color").value = "#FFFF99";
-        document.getElementById("tranquility_font_name").value = "Verdana";
-        document.getElementById("tranquility_font_size").value = "54";
-        document.getElementById("tranquility_reading_width").value = "75";
-        document.getElementById("tranquility_line_height").value = "140";
-        document.getElementById("tranquility_text_align").selectedItem = "left";
-    }
-    
-    if (selOpt !== "custom") {
-        document.getElementById("tranquility_save_changes").click();
-    }
+
+    let getting = browser.storage.local.get("tranquility_presets", onGetting);
+
 }
 
 function callExportTranquilityOfflinePages() {
@@ -201,6 +237,7 @@ function callImportTranquilityOfflinePages() {
 
 document.addEventListener("DOMContentLoaded", restoreOptions);
 document.getElementById("tranquility_save_changes").addEventListener("click", saveOptions);
+document.getElementById("tranquility_delete_preset").addEventListener("click", deletePreset);
 document.getElementById("tranquility_export_offline_pages").addEventListener("click", callExportTranquilityOfflinePages);
 document.getElementById("tranquility_import_offline_pages").addEventListener("click", callImportTranquilityOfflinePages);
 document.getElementById("tranquility_preset_combination").addEventListener("change", loadPresetFormats);

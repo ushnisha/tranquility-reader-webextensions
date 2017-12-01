@@ -1,3 +1,15 @@
+## Version 3.0.6:
+
+* Ability to create user defined presets (for users who have 
+  multiple configurations for Tranquility Reader)
+
+* Changes made to Tranquility Reader preferences are instantly 
+  reflected on all tabs in the Tranquil Reading Mode as soon 
+  as the modified preferences are saved - this allows for 
+  easier testing and tuning of the preferences. 
+
+--------------------------------
+
 ## Version 3.0.5:
 
 * Changes for limited support on Firefox for AndroidOS

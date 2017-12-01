@@ -40,6 +40,15 @@ function tranquilize(request, sender, sendResponse) {
     else if (request.tranquility_action === 'AddAnnotation') {
         addAnnotation();
     }
+    else if (request.tranquility_action === 'UpdateTranquilityPreferences') {
+        if (document.getElementsByClassName("tranquility_container").length > 0) {
+            applyAllTranquilityPreferences();
+            return Promise.resolve({response: "Updated Tranquility Preferences"});
+        }
+        else {
+            return Promise.resolve({response: "Tab does not contain Tranquility Reader elements"});
+        }
+    }
     else if (request.tranquility_action == 'None') {
         return Promise.resolve({response: "Receive Do Nothing Message"});
     }

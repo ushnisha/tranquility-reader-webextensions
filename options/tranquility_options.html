@@ -23,14 +23,10 @@
                 <label for="tranquility_preset_combination">Selected Preset:</label>
                 <select name="preset" id="tranquility_preset_combination">
                     <option value="none"></option>
-                    <option value="default">Default (Light)</option>
-                    <option value="dark">Dark</option>
-                    <option value="matrix">Matrix</option>
-                    <option value="highcontrastlargefont">High Contrast Large Font</option>
                 </select>
             </div> 
         </div>
-                
+
         <h2>Fonts & Colors:</h2>
         <div class="tranquility_options_section">
             <div class="tranquility_options_row"> 
@@ -75,9 +71,9 @@
             <div class="tranquility_options_row"> 
                 <label for="tranquility_text_align">Text Align:</label>
                 <select id="tranquility_text_align" class="icon">
-                    <option value="left">Left</option>
-                    <option value="justify">Justify</option>
-                    <option value="right">Right</option>
+                    <option value="left">left</option>
+                    <option value="justify">justify</option>
+                    <option value="right">right</option>
                 </select>
             </div> 
         </div>
@@ -85,7 +81,12 @@
         <h2>&nbsp;</h2>
 
         <div class="tranquility_options_section">
-            <div class="tranquility_options_row" style="justify-content: flex-end;"> 
+            <div class="tranquility_options_row" title="Enter a suitable name to create/delete a custom preset"> 
+                <label for="tranquility_custom_preset_name">Preset Name:</label>
+                <input type="text" id="tranquility_custom_preset_name"/> 
+            </div> 
+            <div class="tranquility_options_row"> 
+                <label id="tranquility_delete_preset" class="tranquility_delete_button">Delete Preset</label> 
                 <label id="tranquility_save_changes" class="tranquility_save_button">Save</label> 
             </div> 
         </div>

@@ -88,6 +88,38 @@ function insertContentScriptsAndCSSAndAction(tabId, action) {
     
 }
 
+function allTabsUpdateTranquilityPreferences() {
+
+    let onQuerying = function(tabs) {
+
+        if (browser.runtime.lastError) {
+            console.log(browser.runtime.lastError);
+        }
+        else {
+            for (let tab of tabs) {
+                updateTab(tab.id);
+            }
+        }
+    }
+
+    let querying = browser.tabs.query({}, onQuerying);
+}
+
+function updateTab(tabId) {
+    let onSendMessage = function(response) {
+        if (browser.runtime.lastError) {
+            console.log(browser.runtime.lastError);
+        }
+        else {
+            console.log("Response From Content Script: " + response.response);
+        }
+    }
+
+    let sendMessage = browser.tabs.sendMessage(tabId,
+                                               {tranquility_action: "UpdateTranquilityPreferences"}, 
+                                               onSendMessage);
+}
+
 function displayTranquilityOfflinePages() {
         
     let onUpdate = function(tab) {
@@ -189,25 +221,15 @@ function handleInstalled(details) {
 
     console.log("Tranquility installed!");
     console.log(details);
-    
-    let options_list = {"tranquility_background_color"              : "#FFFFFF", 
-                        "tranquility_font_color"                    : "#000000", 
-                        "tranquility_link_color"                    : "#0000FF", 
-                        "tranquility_annotation_highlight_color"    : "#FFFF99",
-                        "tranquility_font_name"                     : "Georgia", 
-                        "tranquility_font_size"                     : "22", 
-                        "tranquility_reading_width"                 : "55", 
-                        "tranquility_line_height"                   : "140", 
-                        "tranquility_text_align"                    : "Left"
-    };
+
+    let options_list = tranquility_presets["Default (Light)"];
 
     // Android specific overrides to options
     //
     let gettingInfo = browser.runtime.getPlatformInfo(function (info) {
 
         if (info.os == "android") {
-            options_list["tranquility_font_size"] = "15";
-            options_list["tranquility_reading_width"] = "95";
+            options_list = tranquility_presets["Android"];
         }
       
         let option_keys = Object.keys(options_list);
@@ -217,6 +239,11 @@ function handleInstalled(details) {
             let opt_value = options_list[opt_name];
             initializeOption(opt_name, opt_value);
         }
+
+        // Finally, create a new option to store the presets
+        // to allow users to add their own custom presets
+        initializeOption("tranquility_presets", 
+		         JSON.stringify(tranquility_presets));
     });
   
 }
