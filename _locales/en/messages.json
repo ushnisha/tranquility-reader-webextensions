@@ -28,6 +28,11 @@
     "message"     : "Add Note!",
     "description" : "English description for adding a Tranquility annotation note on selected text from right click context menu"
   },
+
+  "extensionRunTranquilityOnSelectionFromContextMenu" : {
+    "message"     : "Tranquilize Selection!",
+    "description" : "English description for running Tranquility on selected text from right click context menu"
+  },
   
   "runTranquilityFromBrowserAction" : {
     "message"     : "Run",

@@ -18,6 +18,11 @@ function tranquilize(request, sender, sendResponse) {
         RunAndSaveOnLoad();
         return Promise.resolve({response: "Completed Saving Content Offline"});
     }
+    else if (request.tranquility_action == 'RunOnSelection') {
+        console.log("Called to run Tranquility at: " + new Date());
+        RunOnSelection();
+        return Promise.resolve({response: "Completed Running Tranquility on Selection"});
+    }
     else if (request.tranquility_action === 'PopulateOfflineList') {
         console.log("Receive message to display offline files list");
         displayOfflinePages(request.offline_data);
@@ -48,6 +53,9 @@ function tranquilize(request, sender, sendResponse) {
         else {
             return Promise.resolve({response: "Tab does not contain Tranquility Reader elements"});
         }
+    }
+    else if (request.tranquility_action == 'Status') {
+        return Promise.resolve({response: "Tranquility Has Already Run"});
     }
     else if (request.tranquility_action == 'None') {
         return Promise.resolve({response: "Receive Do Nothing Message"});
@@ -84,6 +92,40 @@ function RunOnLoad() {
         pbar.style.visibility = 'visible';
         processXMLHTTPRequest(currentURL, false);
     }
+}
+
+function RunOnSelection() {
+    currentURL = location.toString();
+   
+    // Typically used when the page has at least partially loaded and user has selected some text
+    // However this should work even if we are running on an already processed page; maybe the user wants to
+    // prune the tranquilized content further and read just a portion of the article
+    
+    // Stop loading the document if it has not completed loading
+    if(document.readyState != "complete") {
+        window.stop();
+    }
+
+    // Obtain a DocumentFragment of the selected portion of the webpage
+    let selection = document.getSelection();
+    let range = selection.getRangeAt(0);
+    let frag = range.cloneContents();
+
+    // Show a progress-bar to indicate activity and then process the request
+    // bar will automatically disappear since the document will be replaced
+    let pbar = getProgressBar(document);
+    pbar.style.visibility = 'visible';
+
+    // Clone the current page and replace entire body with the DocumentFragment
+    let contentDoc = document.cloneNode(true);
+    let docBody = contentDoc.body;
+    while (docBody.firstChild) {
+        docBody.removeChild(docBody.firstChild);
+    }
+    docBody.appendChild(frag);
+
+    // Now run tranquility to process the DocumentFragment
+    processContentDoc(contentDoc, currentURL, false);
 }
 
 function RunAndSaveOnLoad() {
@@ -146,7 +188,11 @@ function processResponse (oXHRDoc, thisURL, saveOffline) {
     
     let parser = new DOMParser();
     let contentDoc = parser.parseFromString(oXHRDoc, "text/html");
-    
+    processContentDoc(contentDoc, thisURL, saveOffline);
+}
+
+function processContentDoc(contentDoc, thisURL, saveOffline) {
+
     // Ensure that we set a base element before we replace the
     // web page with the new content; otherwise, relative URL
     // links will be based on the incorrect URL present in the

@@ -1,3 +1,14 @@
+## Version 3.0.7:
+
+* Ability to run Tranquility Reader on a portion of a webpage 
+  by selecting/highlighting only the text that you want to read.
+
+* After highlighting text, right click on the highlighted text 
+  and select "Tranquilize Selection!" from the context menu. 
+  Please note that this feature is not supported on Android platform. 
+
+--------------------------------
+
 ## Version 3.0.6:
 
 * Ability to create user defined presets (for users who have 

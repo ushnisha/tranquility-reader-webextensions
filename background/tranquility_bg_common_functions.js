@@ -16,6 +16,33 @@ function runTranquility(mode) {
      });
 }
 
+function runTranquilityOnSelection() {
+    let mode = "RunOnSelection";
+    console.log("Entered runTranquility at: " + new Date());
+    console.log("Run Mode: " + mode);
+    browser.tabs.query({active: true, currentWindow: true}, function(tabs) {
+        let active_tab = tabs[0];
+
+        console.log(active_tab.id);
+
+        // Send message to tab to find out if Tranquility has already run on that tab
+
+        let onSendMessage = function(response) {
+            if (browser.runtime.lastError) {
+                console.log(browser.runtime.lastError);
+                // Tranquility has not already run; so insert content scripts and run Tranquility
+                insertContentScriptsAndCSSAndAction(active_tab.id, mode);
+            }
+            else {
+                // Tranquility must have run; only then we have a possible response from content script
+                console.log("Response From Content Script: " + response.response);
+                runAction(active_tab.id, mode);
+            }
+        }
+
+        let sendMessage = browser.tabs.sendMessage(active_tab.id, {tranquility_action: "Status"}, onSendMessage);
+     });
+}
 
 function addTranquilityAnnotation() {
     console.log("Sending message to content script to add an annotation...");
@@ -31,6 +58,20 @@ function modifyTabURL(thisURL) {
     });    
 }
 
+function runAction(tabId, action) {
+    // Send message to run tranquility (or other appropriate action that the content scripts
+    // will handle
+    let onSendMessage = function(response) {
+        if (browser.runtime.lastError) {
+            console.log(browser.runtime.lastError);
+        }
+        else {
+            console.log("Response From Content Script: " + response.response);
+        }
+    }
+    
+    let sendMessage = browser.tabs.sendMessage(tabId, {tranquility_action: action}, onSendMessage);
+}
 
 function insertContentScriptsAndCSSAndAction(tabId, action) {
     
@@ -67,19 +108,8 @@ function insertContentScriptsAndCSSAndAction(tabId, action) {
                         setZoom(1);
                     }
                 });
-                
-                // Send message to run tranquility (or other appropriate action that the content scripts
-                // will handle
-                let onSendMessage = function(response) {
-                    if (browser.runtime.lastError) {
-                        console.log(browser.runtime.lastError);
-                    }
-                    else {
-                        console.log("Response From Content Script: " + response.response);
-                    }
-                }
-                
-                let sendMessage = browser.tabs.sendMessage(tabId, {tranquility_action: action}, onSendMessage);
+
+                runAction(tabId, action);
             }
         }).catch(
         function(error) {
