@@ -1,0 +1,164 @@
+{
+  "extensionName" : {
+    "message"     : "Tranquility Reader",
+    "description" : "English name of the Tranquility Reader extension"
+  },
+  
+  "extensionDescription" : {
+    "message"     : "Make a page readable",
+    "description" : "English description of the Tranquility Reader extension"
+  },
+
+  "extensionBrowserActionTitle" : {
+    "message"     : "Tranquility!",
+    "description" : "English title for the browser action"
+  },
+
+  "extensionCommandRunDescription" : {
+    "message"     : "Run Tranquility on the current page",
+    "description" : "English description for the keyboard command shortcut"
+  },
+
+  "extensionRunTranquilityFromContextMenu" : {
+    "message"     : "Tranquilize!",
+    "description" : "English description for running Tranquility from right click context menu"
+  },
+  
+  "extensionAddTranquilityAnnotationFromContextMenu" : {
+    "message"     : "Add Note!",
+    "description" : "English description for adding a Tranquility annotation note on selected text from right click context menu"
+  },
+  
+  "runTranquilityFromBrowserAction" : {
+    "message"     : "Run",
+    "description" : "English text for Browser Action Popup to run Tranquility on a page"
+  },
+
+  "runTranquilityReadLaterFromBrowserAction" : {
+    "message"     : "Read Later",
+    "description" : "English text for Browser Action Popup to run Tranquility on a page and save the page for reading later"
+  },
+
+  "runTranquilityViewOfflinePagesFromBrowserAction" : {
+    "message"     : "View Offline Pages",
+    "description" : "English text for Browser Action Popup to view list of offline pages"
+  },
+  
+  "runTranquilityExportOfflinePagesFromBrowserAction" : {
+    "message"     : "Export Offline Pages",
+    "description" : "English text for Browser Action Popup to export offline pages to a json file"
+  },
+
+  "runTranquilityImportOfflinePagesFromBrowserAction" : {
+    "message"     : "Import Offline Pages",
+    "description" : "English text for Browser Action Popup to import offline pages from a json file"
+  },
+
+  "runTranquilityOptionsFromBrowserAction" : {
+    "message"     : "Options",
+    "description" : "English text for Browser Action Popup to open the Tranquility options_ui web page"
+  },  
+  
+  "singlePageString" : { 
+    "message"     : "SINGLEPAGE,VIEWASASINGLEPAGE,PRINT",
+    "description" : "List of Strings that indicate a SINGLE page view or a Print view is available"
+  },
+  
+  "navigationString" : {
+    "message"     : "NEXT,NEXT>,PREV,<PREV,PREVIOUS,<PREVIOUS,NEXTPAGE,NEXTPAGE>,PREVIOUSPAGE,<PREVIOUSPAGE,FIRST,<<FIRST,LAST,LAST>>,<,<<,>,>>",
+    "description" : "List of Strings that indicate that we have a multi-page document with additional links"
+  },
+  
+  "waitingForLoadNotification" : {
+    "message"     : "Tranquility is waiting for the web page to complete loading...",
+    "description" : "Message to indicate tranquility is still waiting for the page to finish loading"
+  },
+
+  "insufficientContentNotification" : {
+    "message"     : "Tranquility found very little text content; reverting to the original web page in 5 seconds...",
+    "description" : "Message to indicate that the web page does not have much text content and so tranquility is not going to do anything"
+  },
+
+  "dbOpenErrorString" : {
+    "message"     : "Unable to open the database.  Database Error: $DBERROR$",
+    "description" : "Error thrown when Tranquility is unable to open the IndexedDB database",
+    "placeholders": {
+      "dberror" : {
+        "content" : "$1",
+        "example" : "Error!"
+      }
+    }
+  },
+
+  "duplicateURLErrorString" : {
+    "message"     : "Database error: Possible duplicate link.",
+    "description" : "Thrown when trying to store multiple copies of the same webpage for offline viewing"
+  },
+
+  "urlNotFoundErrorString" : {
+    "message"     : "Unable to find document with url: $URL$",
+    "description" : "Database does not contain any offline document with specified url key",
+    "placeholders": {
+      "url" : {
+        "content" : "$1",
+        "example" : "https://developer.mozilla.org"
+      }
+    }
+  },
+
+  "urlNotDeletedErrorString" : {
+    "message"     : "Unable to delete document with url: $URL$",
+    "description" : "Unable to delete record in database with the specified url key",
+    "placeholders": {
+      "url" : {
+        "content" : "$1",
+        "example" : "https://developer.mozilla.org"
+      }
+    }
+  },
+
+  "exportNotesLinkContent": {
+    "message"     : "Right Click and 'Save Link As' to Export Offline Data!",
+    "description" : "Text content for the link for exporting the offline content to a json file"
+  },
+  
+  "importNotesLabelContent": {
+    "message"     : "Click to Select File for Import...",
+    "description" : "Text content for the link for import the offline content from a json file"
+  },
+
+  "readlater" : {
+    "message"     : "Read Later",
+    "description" : "display text for read later div"
+  },
+
+  "morelinks" : {
+    "message"     : "More Links",
+    "description" : "display text for more links div"
+  },
+  "offlinelinks" : {
+    "message"     : "Offline Links",
+    "description" : "display text for offline links div"
+  },
+  
+  "viewnotes" : {
+    "message"     : "View Notes",
+    "description" : "display text for view notes div"
+  },
+
+  "noNotes" : {
+    "message"     : "You don't have any notes.  To add a note, highlight some text, right click, and select 'Add Note!'",
+    "description" : "Notify user that they do not have any annotation notes to display"
+  },
+
+  "expandMenuString" : {
+    "message"     : "Click to display menu",
+    "description" : "Help message to indicate how to show/hide the menu bar at the bottom"
+  },
+
+  "readLaterNotSupportedString" : {
+    "message"     : "'Read Later' functionality is not supported in Private Browsing Mode",
+    "description" : "IndexedDB is not available in the Private browsing mode"
+  }
+}
+  

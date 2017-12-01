@@ -1,0 +1,29 @@
+.tranquility_options_section {
+  padding: 10px;
+  text-align: center;
+  font-size: 1em;
+  background-color: #F0F8FF;
+  cursor: pointer;
+}
+
+.tranquility_options_row {
+  padding: 4px;
+  text-align: center;
+  font-size: 1em;
+  background-color: #F0F8FF;
+  cursor: pointer;
+  display: flex; 
+  justify-content: space-between;
+}
+
+.tranquility_save_button {
+  text-align: center; 
+  border: 1px solid #808080; 
+  font-size: 1em;
+  flex:0 0 20%; 
+  background-color:#E6E6FA;
+}
+
+.tranquility_options_row:hover {
+  background-color: #B0C4DE;
+}

@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8">
+    <link rel="stylesheet" href="tranquility_options.css"/>
+  </head>
+
+  <body>
+    <div class="tranquility_options_panel"> 
+        <h2>Fonts & Colors:</h2>
+        <div class="tranquility_options_section">
+            <div class="tranquility_options_row"> 
+                <label for="tranquility_background_color">Background Color:</label>
+                <input type="text" id="tranquility_background_color"/> 
+            </div> 
+            <div class="tranquility_options_row"> 
+                <label for="tranquility_font_color">Font Color:</label>
+                <input type="text" id="tranquility_font_color"/> 
+            </div> 
+            <div class="tranquility_options_row"> 
+                <label for="tranquility_link_color">Link Color:</label>
+                <input type="text" id="tranquility_link_color"/> 
+            </div> 
+            <div class="tranquility_options_row"> 
+                <label for="tranquility_annotation_highlight_color">Annotation Highlight Color:</label>
+                <input type="text" id="tranquility_annotation_highlight_color"/> 
+            </div> 
+        </div>
+
+        <div class="tranquility_options_section">
+            <div class="tranquility_options_row"> 
+                <label for="tranquility_font_name">Font Name:</label>
+                <input type="text" id="tranquility_font_name"/> 
+            </div>  
+            <div class="tranquility_options_row"> 
+                <label for="tranquility_font_size">Font Size:</label>
+                <input type="text" id="tranquility_font_size"/> 
+            </div> 
+        </div>
+
+        <h2>Text Display Preferences:</h2>
+        <div class="tranquility_options_section">
+            <div class="tranquility_options_row"> 
+                <label for="tranquility_reading_width">Reading Width:</label>
+                <input type="text" id="tranquility_reading_width"/> 
+            </div> 
+            <div class="tranquility_options_row"> 
+                <label for="tranquility_line_height">Line Height:</label>
+                <input type="text" id="tranquility_line_height"/> 
+            </div> 
+            <div class="tranquility_options_row"> 
+                <label for="tranquility_text_align">Text Align:</label>
+                <select id="tranquility_text_align" class="icon">
+                    <option value="left">Left</option>
+                    <option value="justify">Justify</option>
+                    <option value="right">Right</option>
+                </select>
+            </div> 
+        </div>
+
+        <h2>&nbsp;</h2>
+
+        <div class="tranquility_options_section">
+            <div class="tranquility_options_row" style="justify-content: flex-end;"> 
+                <label id="tranquility_save_changes" class="tranquility_save_button">Save</label> 
+            </div> 
+        </div>
+    </div>
+    
+    <script src="tranquility_options.js"></script>
+  </body>
+
+</html>
