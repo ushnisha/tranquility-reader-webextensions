@@ -1,3 +1,10 @@
+## Version 3.0.8:
+
+* Default font size for Android preset was changed to 15 
+  (a typo had set it to 25 instead). 
+
+--------------------------------
+
 ## Version 3.0.7:
 
 * Ability to run Tranquility Reader on a portion of a webpage 

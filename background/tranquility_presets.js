@@ -18,7 +18,7 @@ let tranquility_presets =
                "tranquility_link_color"                 : "#0000FF",
                "tranquility_annotation_highlight_color" : "#FFFF99",
                "tranquility_font_name"                  : "Georgia",
-               "tranquility_font_size"                  : "25",
+               "tranquility_font_size"                  : "15",
                "tranquility_reading_width"              : "95",
                "tranquility_line_height"                : "140",
                "tranquility_text_align"                 : "left"
