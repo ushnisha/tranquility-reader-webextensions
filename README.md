@@ -52,9 +52,9 @@ Tranquility Reader are critical for you.
   on AndroidOS.
 
 * Transform only a portion of the webpage by highlighting the text 
-  and then running Tranquility (right click context menu option 
-  - "Tranquilize Selection". 
-  Available from 3.0.7; not supported on AndroidOS.)
+  and then running Tranquility (right click context menu 
+  option - "Tranquilize Selection".  Available from 3.0.7; 
+  not supported on AndroidOS.)
 
 
 ## License & Copyright:
