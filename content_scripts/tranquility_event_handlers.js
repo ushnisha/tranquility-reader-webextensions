@@ -202,17 +202,29 @@ function handleClickEvent(event) {
 
     let urlStr = getAnchorNode(event.target);
     // Handle tranquility_continuous browsing
-    // Do not load link - instead request background page to load it and then
-    // run tranquility
+    //
     if (urlStr != undefined) {
-        event.preventDefault();
-        event.stopPropagation();
-        console.log("Entered click event of more links link....");
-        console.log(urlStr);
-        currentURL = urlStr;
-        let pbar = getProgressBar(document);
-        pbar.style.visibility = 'visible';
-        processXMLHTTPRequest(currentURL, false);
+        // First check the link to see if it is a "#" reference; that is, it is
+        // pointing to just another tag/location within the current page.  In this
+        // case, we don't run tranqulity, but perform the default browser action
+        // and continue
+        //
+        if (urlStr.split("#")[0] == currentURL.split("#")[0]) {
+            console.log("Do nothing - we want to navigate to an anchor in the current page...");
+        }
+        // Else...
+        // Do not load link - instead request background page to load it and then
+        // run tranquility
+        else {
+            event.preventDefault();
+            event.stopPropagation();
+            console.log("Entered click event of more links link....");
+            console.log(urlStr);
+            currentURL = urlStr;
+            let pbar = getProgressBar(document);
+            pbar.style.visibility = 'visible';
+            processXMLHTTPRequest(currentURL, false);
+        }
     }
     else if((document.getElementById('tranquility_links') != undefined) &&
        (document.getElementById('tranquility_links').style.visibility == 'visible')) {

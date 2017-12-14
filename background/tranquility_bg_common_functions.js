@@ -84,7 +84,7 @@ function insertContentScriptsAndCSSAndAction(tabId, action) {
     let p4 = browser.tabs.executeScript(tabId, { matchAboutBlank: true, file: "/content_scripts/tranquility_annotations.js", runAt: "document_end"});
     let p5 = browser.tabs.executeScript(tabId, { matchAboutBlank: true, file: "/content_scripts/tranquility_offline_content.js", runAt: "document_end"});
     let p6 = browser.tabs.executeScript(tabId, { matchAboutBlank: true, file: "/content_scripts/tranquility_event_handlers.js", runAt: "document_end"});
-    
+
     Promise.all([p1, p2, p3, p4, p5, p6]).then(
         function () { 
             if (action == "PopulateOfflinePages") {
