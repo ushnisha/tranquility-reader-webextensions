@@ -1,3 +1,17 @@
+## Version 3.0.9:
+
+* Add support to handle #links; Tranquility currently tries to
+  reload the entire page and reprocess instead of moving to the
+  #link.
+
+* Experimental support to handle images better.  Most images were
+  being removed.  Added support for images.  Currently, more images
+  than necessary are retained (including some pesky icons) but
+  the changes are ready for publishing to a wider audience to
+  receive feedback.
+
+--------------------------------
+
 ## Version 3.0.8:
 
 * Default font size for Android preset was changed to 15 
