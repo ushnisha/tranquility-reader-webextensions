@@ -6,6 +6,7 @@
 'use strict';
 var browser = browser || chrome;
 var currentURL = null;
+var dfsIndex = 1;
 
 function tranquilize(request, sender, sendResponse) {
     if (request.tranquility_action === 'Run') {
@@ -193,6 +194,16 @@ function processResponse (oXHRDoc, thisURL, saveOffline) {
 
 function processContentDoc(contentDoc, thisURL, saveOffline) {
 
+
+    // First get a dfs search to index every single element in the
+    // document
+    let indexMap = {};
+    indexElements(indexMap, contentDoc.body);
+
+    // Clone all the image nodes for later insertion
+    let imgCollection = {};
+    cloneImages(contentDoc.body, imgCollection);
+
     // Ensure that we set a base element before we replace the
     // web page with the new content; otherwise, relative URL
     // links will be based on the incorrect URL present in the
@@ -222,13 +233,14 @@ function processContentDoc(contentDoc, thisURL, saveOffline) {
     
     // Cleanup the head and unnecessary tags
     let delTags = ["STYLE", "LINK", "META", "SCRIPT", "NOSCRIPT", "IFRAME", 
-                   "SELECT", "DD", "INPUT", "TEXTAREA", "HEADER"]; 
+                   "SELECT", "DD", "INPUT", "TEXTAREA", "HEADER", "NAV",
+                   "BUTTON", "PICTURE", "FIGURE"];
     for(let i=0; i<delTags.length; i++) {
         removeTag(contentDoc, delTags[i]);
     }
     
-    console.log("Clenaed up unnecessary tags and headers");
-    
+    console.log("Cleaned up unnecessary tags and headers");
+   
     // Reformat the header and use custom css
     reformatHeader(contentDoc);
 
@@ -238,9 +250,9 @@ function processContentDoc(contentDoc, thisURL, saveOffline) {
     // Also, delete any content that has display = 'none' or visibility == 'hidden'
     // This was being done only for spacer images, but seems like a meaningful thing
     // to do for all elements, given that all scripts are also deleted in the Tranquility view
-    let hiddenTags = ["DIV", "P", "IMG"];
+    let hiddenTags = ["DIV", "P", "IMG", "FIGURE", "PICTURE"];
     for(let i=0; i < hiddenTags.length; i++) {
-        deleteHiddenElements(contentDoc, hiddenTags[i]);
+        deleteHiddenElements(contentDoc, hiddenTags[i], imgCollection);
     }
 
     // Processing for ads related DIV's; several websites seem to use LI elements
@@ -250,11 +262,11 @@ function processContentDoc(contentDoc, thisURL, saveOffline) {
     let pruneAdsTagList = ["UL", "DIV", "ARTICLE", "SECTION"];
     let totalSize = computeSize(contentDoc.documentElement);
     for(let p=0; p < pruneAdsTagList.length; p++) {
-        pruneAdsTag(contentDoc, thisURL, pruneAdsTagList[p], 0.7, totalSize);
+        pruneAdsTag(contentDoc, thisURL, pruneAdsTagList[p], 0.7, totalSize, imgCollection);
     }
 
     console.log("Pruned the AdsTag");
-    
+   
     // Cleanup select tags that have content length smaller than minSize 
     // This helps clean up a number of junk DIV's before we get to real content
     // Can be made a parameter in later versions
@@ -305,7 +317,12 @@ function processContentDoc(contentDoc, thisURL, saveOffline) {
     }
 
     console.log("Completed reformatting tags");
-    
+   
+    // Time to add back the images that we have cloned
+    //
+    addBackImages(contentDoc, imgCollection, indexMap);
+
+
     // Add the "Menu Items" to the top of the page
     let menu_div = createNode(contentDoc, {type: 'DIV', attr: { class:'tranquility_menu', id:'tranquility_menu', align:'center' } });
 
@@ -484,20 +501,26 @@ function reformatHeader(cdoc) {
     }    
 }
 
-function deleteHiddenElements(cdoc, tagString) {
+function deleteHiddenElements(cdoc, tagString, imgCollection) {
     // Remove elements that have display==none or visibility==hidden
     let elems = cdoc.getElementsByTagName(tagString);
     for(let i=elems.length - 1; i >=0;  i--)  {
         if(((elems[i].style.visibility != undefined) && 
             (elems[i].style.visibility == 'hidden')) ||
            ((elems[i].style.display != undefined) && 
-            (elems[i].style.display == 'none')))                                
+            (elems[i].style.display == 'none'))) {
+            if (tagString == 'IMG') {
+                if (elems[i].src in imgCollection) {
+                    delete imgCollection[elems[i].src];
+                }
+            }
             elems[i].parentNode.removeChild(elems[i]);
+        }
     }
 }
 
 
-function pruneAdsTag(cdoc, url, tagString, thresholdPctg, totalSize) {
+function pruneAdsTag(cdoc, url, tagString, thresholdPctg, totalSize, imgCollection) {
 
     let c = cdoc.getElementsByTagName(tagString);
     let len = c.length;
@@ -543,6 +566,14 @@ function pruneAdsTag(cdoc, url, tagString, thresholdPctg, totalSize) {
             // remove, the DIV.  Additionally we can also look at the number of words
             // per anchor, but for now, that is not enabled
             if (inner_div_pctg >= thresholdPctg) {
+                let images = tElem.getElementsByTagName('img');
+                if (images.length > 0) {
+                    for (let k = 0; k < images.length; k++) {
+                        if (images[k].src in imgCollection) {
+                            delete imgCollection[images[k].src];
+                        }
+                    }
+                }
                 tElem.parentNode.removeChild(tElem); 
             }
         }
@@ -917,6 +948,7 @@ function hideOfflineLinksDiv(cdoc) {
 function removeAnchorAttributes(cdoc) {
 
     let c = cdoc.getElementsByTagName('a');
+
     for(let i=0; i < c.length; i++) {
         if(c[i].getAttribute('target')) {
             c[i].removeAttribute('target');
@@ -953,6 +985,85 @@ function getProgressBar(cdoc) {
     }
     return pbar;
 }
+
+function indexElements(indexMap, node) {
+
+    indexMap[dfsIndex] = node;
+    if (node.nodeType == 1) {
+        node.setAttribute('data-dfsIndex', dfsIndex);
+    }
+    dfsIndex += 1;
+    let children = node.childNodes;
+    for (let i = 0; i < children.length; i++) {
+        indexElements(indexMap, children[i]);
+    }
+}
+
+function cloneImages(cdoc, collection) {
+
+    let images = cdoc.getElementsByTagName('img');
+    for (let i = 0; i < images.length; i++) {
+        collection[images[i].src] = images[i].cloneNode(true);
+    }
+}
+
+function addBackImages(cdoc, imgs, indexMap) {
+
+    let images = cdoc.body.getElementsByTagName('img');
+    let imgMap = {};
+    for (let i = 0; i < images.length; i++) {
+        imgMap[images[i].src] = 1;
+    }
+
+    let children = cdoc.body.getElementsByTagName('*');
+
+    for (let key in imgs) {
+
+        // Skip adding back image if the current cleanup has already
+        // retained the original image
+        //
+        if (key in imgMap) {
+            continue;
+        }
+
+        let img = imgs[key];
+
+        // Should we include images without alt text?  Maybe these
+        // are not important and/or are advertisment/unrelated images?
+        //
+        //if (img.alt.length == 0) {
+        //    continue;
+        //}
+
+        let nextSibling = null;
+        let prevSibling = null;
+        let prevSiblingIdx = -1;
+        let imgIdx = parseInt(img.getAttribute('data-dfsIndex'));
+        for (let i = 0; i < children.length; i++) {
+            if (children[i].nodeType == 1) {
+                let idx = parseInt(children[i].getAttribute('data-dfsIndex'));
+                if (idx < imgIdx && idx > prevSiblingIdx) {
+                    prevSibling = children[i];
+                    prevSiblingIdx = idx;
+                }
+                if (idx > imgIdx) {
+                    nextSibling = children[i];
+                    break;
+                }
+            }
+            else {
+            }
+        }
+
+        if (nextSibling != null) {
+            nextSibling.insertAdjacentElement('beforebegin', img);
+        }
+        else if (prevSibling != null) {
+            prevSibling.insertAdjacentElement('afterend', img);
+        }
+    }
+}
+
 
 /*
  * Assign tranquilize() as a listener for messages from the extension.
