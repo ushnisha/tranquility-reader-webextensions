@@ -1,3 +1,17 @@
+## Version 3.0.10:
+
+* Fix to scale images better
+
+* Remove hidden images (based on the computedStyle properties)
+
+* Allow smaller length text content to show more information.
+  This can have the side effect of unnecessary material getting
+  into the tranquilized view.  So, this is currently experimental.
+
+* Updated copyright message
+
+--------------------------------
+
 ## Version 3.0.9:
 
 * Add support to handle #links; Tranquility currently tries to

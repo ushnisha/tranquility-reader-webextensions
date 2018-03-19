@@ -1,3 +1,30 @@
+/**
+ **********************************************************************
+ * Tranquility Reader - A Firefox Webextension that cleans up
+ * cluttered web pages
+ **********************************************************************
+
+   Copyright (c) 2012-2018 Arun Kunchithapatham
+
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+   Contributors:
+   Arun Kunchithapatham - Initial Contribution
+ ***********************************************************************
+ *
+ */
+
 'use strict';
 
 var browser = browser || chrome;
@@ -216,10 +243,16 @@ function resizeImages(document, reading_width) {
 function resizeLoadedImage(image, max_width) {    
     image.removeAttribute('class');
     image.removeAttribute('style');
-    if((image.width != undefined) && (image.height != undefined) &&
-       (image.width > max_width))  {
-        let aspect_ratio = image.height/image.width;
+
+    let origWidth = image.getAttribute('data-origWidth');
+    let origHeight = image.getAttribute('data-origHeight');
+
+    if((origWidth != undefined) && (origHeight != undefined) &&
+       (origWidth > max_width))  {
+        let aspect_ratio = origHeight/origWidth;
         image.width = max_width;
         image.height = max_width*aspect_ratio;
     }  
 }
+
+window.addEventListener("resize", applyAllTranquilityPreferences);

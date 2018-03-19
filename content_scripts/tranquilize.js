@@ -1,3 +1,30 @@
+/**
+ **********************************************************************
+ * Tranquility Reader - A Firefox Webextension that cleans up
+ * cluttered web pages
+ **********************************************************************
+
+   Copyright (c) 2012-2018 Arun Kunchithapatham
+
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+   Contributors:
+   Arun Kunchithapatham - Initial Contribution
+ ***********************************************************************
+ *
+ */
+
 /*
  * Process the messages appropriately
  * 
@@ -71,14 +98,17 @@ function RunOnLoad() {
     // If we have already run tranquility, then just toggle back to the original webpage (un-tranquilize the page)
     if (document.body.getElementsByClassName("tranquility").length > 0) {
         // If this is an offline link, we need to get the data-active-link of the tranquility_offline_links_btn
+        console.log("Document already in tranquility mode. Reverting to original page...");
         let btn = document.getElementById('tranquility_offline_links_btn');
         let url = null;
         if(btn.getAttribute('data-active-link')) {
+            console.log("Found data active link...");
             url = btn.getAttribute('data-active-link');
         }
         else {
             url = currentURL;
         }
+        console.log("url: " + url);
         window.location.assign(url);
     }
     // If tranquility has not been run, then "tranquilize" the document
@@ -194,7 +224,6 @@ function processResponse (oXHRDoc, thisURL, saveOffline) {
 
 function processContentDoc(contentDoc, thisURL, saveOffline) {
 
-
     // First get a dfs search to index every single element in the
     // document
     let indexMap = {};
@@ -231,6 +260,17 @@ function processContentDoc(contentDoc, thisURL, saveOffline) {
 
     console.log("Removed white spaces and comments");
     
+    // Delete any hidden images (these are typically spacers)
+    // Also, delete any content that has display = 'none' or visibility == 'hidden'
+    // This was being done only for spacer images, but seems like a meaningful thing
+    // to do for all elements, given that all scripts are also deleted in the Tranquility view
+    let hiddenTags = ["DIV", "SPAN", "P", "IMG", "FIGURE", "PICTURE"];
+    for(let i=0; i < hiddenTags.length; i++) {
+        deleteHiddenElements(contentDoc, hiddenTags[i], imgCollection);
+    }
+
+    console.log("Removed Hidden elements");
+
     // Cleanup the head and unnecessary tags
     let delTags = ["STYLE", "LINK", "META", "SCRIPT", "NOSCRIPT", "IFRAME", 
                    "SELECT", "DD", "INPUT", "TEXTAREA", "HEADER", "NAV",
@@ -245,15 +285,6 @@ function processContentDoc(contentDoc, thisURL, saveOffline) {
     reformatHeader(contentDoc);
 
     console.log("Reformatted headers...");
-
-    // Delete any hidden images (these are typically spacers)
-    // Also, delete any content that has display = 'none' or visibility == 'hidden'
-    // This was being done only for spacer images, but seems like a meaningful thing
-    // to do for all elements, given that all scripts are also deleted in the Tranquility view
-    let hiddenTags = ["DIV", "P", "IMG", "FIGURE", "PICTURE"];
-    for(let i=0; i < hiddenTags.length; i++) {
-        deleteHiddenElements(contentDoc, hiddenTags[i], imgCollection);
-    }
 
     // Processing for ads related DIV's; several websites seem to use LI elements
     // within the ads DIV's, or for navigation links which are not required in the 
@@ -281,7 +312,7 @@ function processContentDoc(contentDoc, thisURL, saveOffline) {
     // Next run with minsize 200 (for a reduced subset of the tags)
     // Removed TD, TABLE, and DD for now
     pruneTagList = ["FORM", "DIV", "ARTICLE", "SECTION"];
-    minSize = 200;
+    minSize = 5;
     totalSize = computeSize(contentDoc.documentElement);
     for(let p=0; p < pruneTagList.length; p++) {
         pruneTag(contentDoc, pruneTagList[p], 0.0, minSize, totalSize);
@@ -422,7 +453,7 @@ function processContentDoc(contentDoc, thisURL, saveOffline) {
         let new_body = old_body.cloneNode(true);
         document.documentElement.replaceChild(new_body, old_body);
     }
-    
+
     // Next replace the documentElement with the processed contentDoc
     document.replaceChild(contentDoc.documentElement, document.documentElement);
 
@@ -505,10 +536,13 @@ function deleteHiddenElements(cdoc, tagString, imgCollection) {
     // Remove elements that have display==none or visibility==hidden
     let elems = cdoc.getElementsByTagName(tagString);
     for(let i=elems.length - 1; i >=0;  i--)  {
-        if(((elems[i].style.visibility != undefined) && 
-            (elems[i].style.visibility == 'hidden')) ||
-           ((elems[i].style.display != undefined) && 
-            (elems[i].style.display == 'none'))) {
+
+        let cssProp = window.getComputedStyle(elems[i], null);
+        let cssVisibility = cssProp.getPropertyValue("visibility");
+        let cssDisplay = cssProp.getPropertyValue("display");
+
+        if(((cssVisibility != undefined) && (cssVisibility == 'hidden')) ||
+           ((cssDisplay != undefined) && (cssDisplay == 'none'))) {
             if (tagString == 'IMG') {
                 if (elems[i].src in imgCollection) {
                     delete imgCollection[elems[i].src];
@@ -1001,9 +1035,15 @@ function indexElements(indexMap, node) {
 
 function cloneImages(cdoc, collection) {
 
+    // This function also preserves the original width/height of the images
+    // in data fields
     let images = cdoc.getElementsByTagName('img');
     for (let i = 0; i < images.length; i++) {
+        images[i].setAttribute('data-origWidth', images[i].width);
+        images[i].setAttribute('data-origHeight', images[i].height);
+
         collection[images[i].src] = images[i].cloneNode(true);
+        console.log(images[i].src + ": " + images[i].alt);
     }
 }
 
@@ -1019,6 +1059,7 @@ function addBackImages(cdoc, imgs, indexMap) {
 
     for (let key in imgs) {
 
+        console.log(key + ": " + imgs[key].alt);
         // Skip adding back image if the current cleanup has already
         // retained the original image
         //
