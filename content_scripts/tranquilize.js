@@ -4,7 +4,7 @@
  * cluttered web pages
  **********************************************************************
 
-   Copyright (c) 2012-2018 Arun Kunchithapatham
+   Copyright (c) 2012-2019 Arun Kunchithapatham
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -181,8 +181,10 @@ function processXMLHTTPRequest(url, saveOffline) {
 
     // Handle corner case to avoid mixed content security warnings/errors
     let getURL = url;
-    if (location.toString().substr(5) == 'https') {
+    if (getURL.substr(5) == 'https') {
+        console.log(getURL);
         getURL = getURL.replace(/^http\:/, 'https:');
+        console.log(getURL);
     }
 
     let oXHR = new XMLHttpRequest();
@@ -434,7 +436,18 @@ function processContentDoc(contentDoc, thisURL, saveOffline) {
     menu_div.appendChild(viewnotes_button_div);
 
     hideMenuDiv(contentDoc);
-    
+
+    // Add a link to the original webpage for quick navigation/copying at the top of the page
+    let original_link_div = createNode(contentDoc, {type: 'DIV', attr: {class:'tranquility_original_link_div', id:'tranquility_original_link_div' } });
+    original_link_div.setAttribute('title', browser.i18n.getMessage("originallink"));
+    let original_link_anchor = createNode(contentDoc, {type: 'A', attr: {class:'tranquility_original_link_anchor', id:'tranquility_original_link_anchor' } });
+    original_link_anchor.href = thisURL;
+    original_link_anchor.alt = browser.i18n.getMessage("originallink");
+    let link_symbol = '\u26D3';
+    original_link_anchor.textContent = link_symbol;
+    original_link_div.appendChild(original_link_anchor);
+    contentDoc.body.insertBefore(original_link_div, contentDoc.body.firstChild);
+
     console.log("Added all custom buttons and menus");
     
     // Remove target attribute from all anchor elements

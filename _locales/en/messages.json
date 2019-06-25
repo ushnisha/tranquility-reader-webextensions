@@ -161,6 +161,11 @@
     "description" : "Help message to indicate how to show/hide the menu bar at the bottom"
   },
 
+  "originallink" : {
+    "message"     : "Original Source URL",
+    "description" : "Text that indicates that the link symbol is the original source URL"
+  },
+
   "readLaterNotSupportedString" : {
     "message"     : "'Read Later' functionality is not supported in Private Browsing Mode",
     "description" : "IndexedDB is not available in the Private browsing mode"

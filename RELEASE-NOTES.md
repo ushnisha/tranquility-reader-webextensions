@@ -1,3 +1,16 @@
+## Version 3.0.11:
+
+* When a reader click on a link in the tranquility mode, the page
+  updates to show the clicked URL contents in the tranquility mode.
+  However, the address bar is not updated.
+
+  An icon is provided on the top right corner of the page with a
+  link to the URL of the page that is currently processed/displayed.
+
+* Updated copyright message
+
+--------------------------------
+
 ## Version 3.0.10:
 
 * Fix to scale images better
