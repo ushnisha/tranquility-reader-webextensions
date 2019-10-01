@@ -139,13 +139,13 @@ function displayDocFromDB(cached_doc, thisURL) {
     // Delete existing base elements and include new ones with 'thisURL'
     // as the base URL; this helps handle saved/imported offline documents
     // that continue to have relative links
-    let bases = doc.getElementsByTagName("base");
+    let bases = doc.getElementsByTagName("BASE");
     for (let i=0; i < bases.length; i++) {
         bases[i].parentNode.removeChild(bases[i]);
     }
     
     let baseElem = createNode(document, {type: 'BASE', attr: { href:thisURL } });
-    let heads = doc.getElementsByTagName('head');
+    let heads = doc.getElementsByTagName('HEAD');
     for(let i = 0; i < heads.length; i++) {
         heads[i].appendChild(baseElem.cloneNode(true));
     }

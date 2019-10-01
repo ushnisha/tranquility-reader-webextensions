@@ -212,6 +212,13 @@ function processXMLHTTPRequest(url, saveOffline) {
     };
     console.log(url);
     oXHR.open("GET", getURL, true);
+
+    // Fix to handle pages that use iso-8859-1/windows-1252 encoding
+    //
+    if (document.characterSet.toLowerCase() == "windows-1252") {
+        oXHR.overrideMimeType('text/html; charset=iso-8859-1');
+    }
+
     oXHR.send(null);
 }
           
@@ -225,6 +232,30 @@ function processResponse (oXHRDoc, thisURL, saveOffline) {
 }
 
 function processContentDoc(contentDoc, thisURL, saveOffline) {
+
+    // Remove all event handlers by cloning every single element
+    let allElems = contentDoc.getElementsByTagName("*");
+    for (let i = 0; i < allElems.length; i++) {
+        allElems[i].parentNode.replaceChild(allElems[i].cloneNode(true), allElems[i]);
+    }
+
+    // Delete All Hidden Elements before doing anything further
+    // These could be hidden images, div, spans, spacers, etc...
+    // Delete any content that has display = 'none' or visibility == 'hidden'
+    // This was originally done only for spacer images, but seems like a meaningful thing
+    // to do for all elements, given that all scripts are also deleted in the Tranquility view
+    //
+    deleteHiddenElements(contentDoc, "*");
+    console.log("Removed Hidden elements");
+
+    // Remove zero sized images; this is just another way of hiding elements
+    // otherwise, these can get cloned and reappear
+    // resized to the reading width, which is very annoying
+    // This has a side effect of removing images that have not yet loaded
+    // The problem will be addressed in a later release
+    //
+    deleteZeroSizeImages(contentDoc);
+    console.log("Removed Zero Sized Images");
 
     // First get a dfs search to index every single element in the
     // document
@@ -243,40 +274,49 @@ function processContentDoc(contentDoc, thisURL, saveOffline) {
     // links to absolute links so that these links will also
     // work if we save this document for reading later
     //
-    let baseElem = createNode(contentDoc, {type: 'base', attr: { href: thisURL } });
-    let heads = contentDoc.getElementsByTagName('head');
+    let baseElem = createNode(contentDoc, {type: 'BASE', attr: { href: thisURL } });
+    let heads = contentDoc.getElementsByTagName('HEAD');
     for(let i = 0; i < heads.length; i++) {
         heads[i].appendChild(baseElem.cloneNode(true));
     }
     convertLinksAbsolute(contentDoc, thisURL);
 
     console.log("Processing document...");
+
+    // Remove any links that have an onclick event (these are usually for sharing to social media)
+    // removing such links is consistent with our preference to delete all javascript
+    //
+    console.log("Removing links with associated javascript events...");
+    let all_links = contentDoc.getElementsByTagName("A");
+    for (let i = all_links.length - 1; i >= 0; i--) {
+        let onclickVal = all_links[i].getAttribute('onclick');
+        if (onclickVal != null) {
+            removeNodeRecursive(all_links[i]);
+        }
+    }
             
     // Collect any supporting links before processing the webpage
     let supporting_links = getSupportingLinks(contentDoc);
     
     console.log("Got supporting links...");
     
+    // If there is a single "ARTICLE" tag, then replace the entire document content with just the
+    // contents of the article.  Trust that the content creator has done the correct thing
+    //
+    let articles = contentDoc.getElementsByTagName("article");
+    if (articles.length == 1) {
+        replaceParent(contentDoc, "ARTICLE", 0.0);
+    }
+
     // Remove unnecessary whitespaces and comments
     removeWhiteSpaceComments(contentDoc);
 
     console.log("Removed white spaces and comments");
     
-    // Delete any hidden images (these are typically spacers)
-    // Also, delete any content that has display = 'none' or visibility == 'hidden'
-    // This was being done only for spacer images, but seems like a meaningful thing
-    // to do for all elements, given that all scripts are also deleted in the Tranquility view
-    let hiddenTags = ["DIV", "SPAN", "P", "IMG", "FIGURE", "PICTURE"];
-    for(let i=0; i < hiddenTags.length; i++) {
-        deleteHiddenElements(contentDoc, hiddenTags[i], imgCollection);
-    }
-
-    console.log("Removed Hidden elements");
-
     // Cleanup the head and unnecessary tags
     let delTags = ["STYLE", "LINK", "META", "SCRIPT", "NOSCRIPT", "IFRAME", 
-                   "SELECT", "DD", "INPUT", "TEXTAREA", "HEADER", "NAV",
-                   "BUTTON", "PICTURE", "FIGURE"];
+                   "SELECT", "DD", "INPUT", "TEXTAREA", "HEADER", "FOOTER",
+                   "NAV", "FORM", "BUTTON", "PICTURE", "FIGURE", "SVG"];
     for(let i=0; i<delTags.length; i++) {
         removeTag(contentDoc, delTags[i]);
     }
@@ -525,17 +565,18 @@ function removeTag(cdoc, tagString) {
         if(tElem.id == undefined || tElem.id.substr(0,11) !== "tranquility") {
             tElem.parentNode.removeChild(tElem);
         }
+
     }
 }
 
 function reformatHeader(cdoc) {
     
-    let heads = cdoc.getElementsByTagName('head');
+    let heads = cdoc.getElementsByTagName('HEAD');
     for(let i=0; i < heads.length; i++) {
         let hChildren = heads[i].getElementsByTagName("*");
         let titleNodeCount = 0;
         while(hChildren.length > titleNodeCount) {
-            if (hChildren[titleNodeCount].nodeName !== "TITLE") {
+            if (hChildren[titleNodeCount].nodeName.toUpperCase() !== "TITLE") {
                 heads[i].removeChild(hChildren[titleNodeCount]);
             }
             else {
@@ -545,7 +586,7 @@ function reformatHeader(cdoc) {
     }    
 }
 
-function deleteHiddenElements(cdoc, tagString, imgCollection) {
+function deleteHiddenElements(cdoc, tagString) {
     // Remove elements that have display==none or visibility==hidden
     let elems = cdoc.getElementsByTagName(tagString);
     for(let i=elems.length - 1; i >=0;  i--)  {
@@ -556,11 +597,6 @@ function deleteHiddenElements(cdoc, tagString, imgCollection) {
 
         if(((cssVisibility != undefined) && (cssVisibility == 'hidden')) ||
            ((cssDisplay != undefined) && (cssDisplay == 'none'))) {
-            if (tagString == 'IMG') {
-                if (elems[i].src in imgCollection) {
-                    delete imgCollection[elems[i].src];
-                }
-            }
             elems[i].parentNode.removeChild(elems[i]);
         }
     }
@@ -742,8 +778,16 @@ function computeSize(dElem) {
 function convertLinksAbsolute(node, baseURL) {
     let alinks = node.getElementsByTagName('A');    
     for(let i=0; i < alinks.length; i++) {
-        var absURL = new URL(alinks[i].href, baseURL);
-        alinks[i].href = absURL.href;
+        // Fix where some pages with a "mail:" link fail when trying to construct
+        // the new URL; wrap this in a try/catch to handle any links that cannot
+        // be processed
+        try {
+            var absURL = new URL(alinks[i].href, baseURL);
+            alinks[i].href = absURL.href;
+        }
+        catch(error) {
+            console.log(error);
+        }
     }
 }
 
@@ -802,7 +846,7 @@ function getSupportingLinks(cDoc) {
 
 function cleanupNavLinks(nlinks_div) {
 
-    let nlinks = nlinks_div.getElementsByTagName('a');
+    let nlinks = nlinks_div.getElementsByTagName('A');
     let nlinks_count = nlinks.length;
     let navRegExp = /^\d+$/;
     let nLinkExists = [];
@@ -845,13 +889,13 @@ function removeDuplicateAndBadLinks(cdoc, url, orig_links) {
     let encodedURL = encodeURIComponent(url.split("#")[0]);
     let re = new RegExp("^http:");
 
-    let c = cdoc.getElementsByTagName('a');
+    let c = cdoc.getElementsByTagName('A');
     let bodyHrefs = [];
     for(let i=0; i < c.length; i++) {
         bodyHrefs[c[i].href] = 1;
     }
 
-    let d = orig_links.getElementsByTagName('a');
+    let d = orig_links.getElementsByTagName('A');
     let moreHrefCounts = [];
     for(let i=0; i < d.length; i++) {
         if(moreHrefCounts[d[i].href] != undefined)
@@ -994,7 +1038,7 @@ function hideOfflineLinksDiv(cdoc) {
 
 function removeAnchorAttributes(cdoc) {
 
-    let c = cdoc.getElementsByTagName('a');
+    let c = cdoc.getElementsByTagName('A');
 
     for(let i=0; i < c.length; i++) {
         if(c[i].getAttribute('target')) {
@@ -1050,7 +1094,7 @@ function cloneImages(cdoc, collection) {
 
     // This function also preserves the original width/height of the images
     // in data fields
-    let images = cdoc.getElementsByTagName('img');
+    let images = cdoc.getElementsByTagName('IMG');
     for (let i = 0; i < images.length; i++) {
         images[i].setAttribute('data-origWidth', images[i].width);
         images[i].setAttribute('data-origHeight', images[i].height);
@@ -1062,7 +1106,7 @@ function cloneImages(cdoc, collection) {
 
 function addBackImages(cdoc, imgs, indexMap) {
 
-    let images = cdoc.body.getElementsByTagName('img');
+    let images = cdoc.body.getElementsByTagName('IMG');
     let imgMap = {};
     for (let i = 0; i < images.length; i++) {
         imgMap[images[i].src] = 1;
@@ -1072,7 +1116,8 @@ function addBackImages(cdoc, imgs, indexMap) {
 
     for (let key in imgs) {
 
-        console.log(key + ": " + imgs[key].alt);
+        let img = imgs[key];
+
         // Skip adding back image if the current cleanup has already
         // retained the original image
         //
@@ -1080,8 +1125,7 @@ function addBackImages(cdoc, imgs, indexMap) {
             continue;
         }
 
-        let img = imgs[key];
-
+        console.log(key + ": " + imgs[key].alt);
         // Should we include images without alt text?  Maybe these
         // are not important and/or are advertisment/unrelated images?
         //
@@ -1114,6 +1158,32 @@ function addBackImages(cdoc, imgs, indexMap) {
         }
         else if (prevSibling != null) {
             prevSibling.insertAdjacentElement('afterend', img);
+        }
+    }
+}
+
+// Remove a node recursively based on the text-content of its parent
+//
+function removeNodeRecursive(thisNode) {
+    let thisNodeTextLen = computeSize(thisNode);
+    let parent = thisNode.parentNode;
+    let parentTextLen = computeSize(parent);
+    if (parentTextLen == thisNodeTextLen) {
+        removeNodeRecursive(parent);
+    }
+    else {
+        parent.removeChild(thisNode);
+    }
+}
+
+// Remove any image elements that are not hidden, but have a height/width set to zero
+//
+function deleteZeroSizeImages(cdoc) {
+    let images = cdoc.getElementsByTagName('IMG');
+    for (let i = images.length-1; i >= 0; i--) {
+        if (parseInt(images[i].getAttribute('height')) == 0 ||
+            parseInt(images[i].getAttribute('width')) == 0) {
+            images[i].parentNode.removeChild(images[i]);
         }
     }
 }
