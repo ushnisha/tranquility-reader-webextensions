@@ -1,3 +1,18 @@
+## Version 3.0.13:
+
+* Fixed problem with TITLE/HEAD elements being removed because their
+  default css property of display is "none".  This causes a problem
+  when saving a link for offline reading -- saved article shows up
+  with a blank name
+
+* Fixed logic for replacing using the contents of the ARTICLE tag as
+  proxy for the entire content of the page.  The original solution of
+  replacing just the parent was not sufficient to remove a lot of other
+  crud.  Now, we replace the entire body of the page with the article
+  tag contents
+
+--------------------------------
+
 ## Version 3.0.12:
 
 * Attempt to remove all event handlers in the original page to prevent

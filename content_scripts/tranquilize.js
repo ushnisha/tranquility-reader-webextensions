@@ -305,7 +305,12 @@ function processContentDoc(contentDoc, thisURL, saveOffline) {
     //
     let articles = contentDoc.getElementsByTagName("article");
     if (articles.length == 1) {
-        replaceParent(contentDoc, "ARTICLE", 0.0);
+        let docBody = contentDoc.body;
+        let mainArticle = articles[0].cloneNode(true);
+        while (docBody.firstChild) {
+            docBody.removeChild(docBody.firstChild);
+        }
+        docBody.appendChild(mainArticle);
     }
 
     // Remove unnecessary whitespaces and comments
@@ -589,7 +594,14 @@ function reformatHeader(cdoc) {
 function deleteHiddenElements(cdoc, tagString) {
     // Remove elements that have display==none or visibility==hidden
     let elems = cdoc.getElementsByTagName(tagString);
+
+    let ignoreList = ["HEAD", "TITLE"];
+
     for(let i=elems.length - 1; i >=0;  i--)  {
+
+        if (ignoreList.includes(elems[i].nodeName.toUpperCase())) {
+            continue;
+        }
 
         let cssProp = window.getComputedStyle(elems[i], null);
         let cssVisibility = cssProp.getPropertyValue("visibility");
