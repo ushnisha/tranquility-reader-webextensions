@@ -1,3 +1,9 @@
+## Version 3.0.14:
+
+* Added an option to change browser action icon to a grayscale version
+
+--------------------------------
+
 ## Version 3.0.13:
 
 * Fixed problem with TITLE/HEAD elements being removed because their

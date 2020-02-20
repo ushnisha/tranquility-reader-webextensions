@@ -281,7 +281,7 @@ div.tranquility_expand_menu_btn
   right: 20px;
 }
 
-div.tranquility_original_link_div
+div.tranquility_quick_tools_div
 {
   font-family: Univers,Scala,Georgia,Verdana,Times,Helvetica;
   font-size: 20px;
@@ -291,6 +291,18 @@ div.tranquility_original_link_div
   position: fixed;
   top: 20px;
   right: 20px;
+  width: 40px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+div.tranquility_original_link_div
+{
+  font-family: Univers,Scala,Georgia,Verdana,Times,Helvetica;
+  font-size: 20px;
+  z-index: 9999980;
+  text-align: right;
 }
 
 div.tranquility_menu

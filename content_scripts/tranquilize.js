@@ -482,6 +482,10 @@ function processContentDoc(contentDoc, thisURL, saveOffline) {
 
     hideMenuDiv(contentDoc);
 
+    // Add a div to hold some useful links/icons/functionality
+    let quick_tools_div = createNode(contentDoc, {type: 'DIV', attr: {class:'tranquility_quick_tools_div', id:'tranquility_quick_tools_div' } });
+    contentDoc.body.insertBefore(quick_tools_div, contentDoc.body.firstChild);
+
     // Add a link to the original webpage for quick navigation/copying at the top of the page
     let original_link_div = createNode(contentDoc, {type: 'DIV', attr: {class:'tranquility_original_link_div', id:'tranquility_original_link_div' } });
     original_link_div.setAttribute('title', browser.i18n.getMessage("originallink"));
@@ -491,7 +495,7 @@ function processContentDoc(contentDoc, thisURL, saveOffline) {
     let link_symbol = '\u26D3';
     original_link_anchor.textContent = link_symbol;
     original_link_div.appendChild(original_link_anchor);
-    contentDoc.body.insertBefore(original_link_div, contentDoc.body.firstChild);
+    quick_tools_div.appendChild(original_link_div);
 
     console.log("Added all custom buttons and menus");
     
@@ -1199,7 +1203,6 @@ function deleteZeroSizeImages(cdoc) {
         }
     }
 }
-
 
 /*
  * Assign tranquilize() as a listener for messages from the extension.

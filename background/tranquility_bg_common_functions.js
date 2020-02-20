@@ -273,6 +273,29 @@ function setZoom(zoom) {
     let setting = browser.tabs.setZoom(zoom, onSetZoom);
 }
 
+function getIconFile(iconname) {
+    let iconfile = "tranquility-32.png";
+    if (iconname == "default") {
+        iconfile = "tranquility-32.png";
+    }
+    else if (iconname == "grayscale") {
+        iconfile = "tranquility-32-grayscale.png";
+    }
+    return iconfile;
+}
+
+function changeBrowserActionIcon(iconname) {
+    let onChanging = function() {
+        if (browser.runtime.lastError) {
+            console.log(browser.runtime.lastError);
+        }
+    }
+
+    let iconfile = getIconFile(iconname);
+
+    let changing = browser.browserAction.setIcon({"path": "icons/" + iconfile}, onChanging);
+}
+
 // On installation check to see if an option is gettable; if not, set that option
 function handleInstalled(details) {
 
@@ -288,7 +311,7 @@ function handleInstalled(details) {
         if (info.os == "android") {
             options_list = tranquility_presets["Android"];
         }
-      
+
         let option_keys = Object.keys(options_list);
     
         for (let opt=0; opt < option_keys.length; opt++) {
@@ -306,9 +329,9 @@ function handleInstalled(details) {
 }
 
 function initializeOption(opt_name, opt_value) {
-    
+
     console.log(opt_name + ": " + opt_value);
-    
+
     let onGettingSuccess = function(result) {            
         if (browser.runtime.lastError) {
             console.log(browser.runtime.lastError);
@@ -319,16 +342,45 @@ function initializeOption(opt_name, opt_value) {
                     if (browser.runtime.lastError) {
                         console.log(browser.runtime.lastError);
                     }
-                }                            
+                }
                 let setting = browser.storage.local.set({ [opt_name] : opt_value }, onSetting);
-            }        
+            }
         }
     }
-    
+
     // Try to get an option; if it has not been set ever, 
     // then try setting the option in the onGettingSuccess function
     let getting = browser.storage.local.get(opt_name, onGettingSuccess);
 }
 
+function setBrowserActionIcon() {
+
+    let onGettingSuccess = function(result) {
+        if (browser.runtime.lastError) {
+            console.log(browser.runtime.lastError);
+        }
+        else {
+            if (result.tranquility_browser_action_icon != null) {
+                let onSetting = function() {
+                    if (browser.runtime.lastError) {
+                        console.log(browser.runtime.lastError);
+                    }
+                }
+                console.log(result.tranquility_browser_action_icon);
+                let iconfile = getIconFile(result.tranquility_browser_action_icon);
+                console.log(iconfile);
+                let setting = browser.browserAction.setIcon({"path": "icons/" + iconfile}, onSetting);
+            }
+        }
+    }
+
+    let getting = browser.storage.local.get("tranquility_browser_action_icon", onGettingSuccess);
+}
+
+function handleStartup() {
+  setBrowserActionIcon();
+}
+
 browser.browserAction.onClicked.addListener(browserAction);
 browser.runtime.onInstalled.addListener(handleInstalled);
+browser.runtime.onStartup.addListener(handleStartup);
