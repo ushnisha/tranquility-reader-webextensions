@@ -1,3 +1,19 @@
+
+## Version 3.0.15:
+
+* Ability to save a PDF document of the Tranquility Reader view
+  for offline reading or sharing with others (not supported on MacOS)
+
+* Improve handling of images (fix cases where image width was larger
+  than the reading width setting)
+
+* Use CSS settings to identify some extraneous elements so that they
+  can be removed from the page during processing
+
+* Updated copyright message
+
+--------------------------------
+
 ## Version 3.0.14:
 
 * Added an option to change browser action icon to a grayscale version

@@ -4,7 +4,7 @@
  * cluttered web pages
  **********************************************************************
 
-   Copyright (c) 2012-2019 Arun Kunchithapatham
+   Copyright (c) 2012-2020 Arun Kunchithapatham
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -244,8 +244,8 @@ function resizeLoadedImage(image, max_width) {
     image.removeAttribute('class');
     image.removeAttribute('style');
 
-    let origWidth = image.getAttribute('data-origWidth');
-    let origHeight = image.getAttribute('data-origHeight');
+    let origWidth = image.naturalWidth;
+    let origHeight = image.naturalHeight;
 
     if((origWidth != undefined) && (origHeight != undefined) &&
        (origWidth > max_width))  {

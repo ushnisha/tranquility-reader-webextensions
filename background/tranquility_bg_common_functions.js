@@ -4,7 +4,7 @@
  * cluttered web pages
  **********************************************************************
 
-   Copyright (c) 2012-2019 Arun Kunchithapatham
+   Copyright (c) 2012-2020 Arun Kunchithapatham
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -375,6 +375,45 @@ function setBrowserActionIcon() {
     }
 
     let getting = browser.storage.local.get("tranquility_browser_action_icon", onGettingSuccess);
+}
+
+
+function getOSVersion() {
+
+    let onGetting = function(result) {
+        if (browser.runtime.lastError) {
+            console.log(browser.runtime.lastError);
+        }
+        else {
+            if (result.os != null) {
+                browser.tabs.query({active: true, currentWindow: true}, function(tabs) {
+                    browser.tabs.sendMessage(tabs[0].id, {"tranquility_action": "UpdateOSVersion",
+                                                          "osVersion": result.os});
+                });
+            }
+        }
+    }
+
+    let getting = browser.runtime.getPlatformInfo(onGetting);
+}
+
+function saveAsPDF() {
+
+    browser.tabs.query({active: true, currentWindow: true}, function(tabs) {
+        let active_tab = tabs[0];
+
+        let onSaving = function(tab) {
+            if (browser.runtime.lastError) {
+                console.log(browser.runtime.lastError);
+            }
+            else {
+                console.log("Saved active tab as PDF");
+            }
+        };
+
+        let saving = browser.tabs.saveAsPDF({'shrinkToFit': false}, onSaving);
+
+     });
 }
 
 function handleStartup() {

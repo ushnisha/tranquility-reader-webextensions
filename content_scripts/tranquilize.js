@@ -4,7 +4,7 @@
  * cluttered web pages
  **********************************************************************
 
-   Copyright (c) 2012-2019 Arun Kunchithapatham
+   Copyright (c) 2012-2020 Arun Kunchithapatham
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -34,8 +34,12 @@
 var browser = browser || chrome;
 var currentURL = null;
 var dfsIndex = 1;
+var osVersion = null;
 
 function tranquilize(request, sender, sendResponse) {
+
+    requestOSVersion();
+
     if (request.tranquility_action === 'Run') {
         console.log("Called to run Tranquility at: " + new Date());
         RunOnLoad();
@@ -84,6 +88,10 @@ function tranquilize(request, sender, sendResponse) {
     }
     else if (request.tranquility_action == 'Status') {
         return Promise.resolve({response: "Tranquility Has Already Run"});
+    }
+    else if (request.tranquility_action == 'UpdateOSVersion') {
+        updateOSVersion(request.osVersion);
+        return Promise.resolve({response: "Updated OS Version"});
     }
     else if (request.tranquility_action == 'None') {
         return Promise.resolve({response: "Receive Do Nothing Message"});
@@ -317,7 +325,7 @@ function processContentDoc(contentDoc, thisURL, saveOffline) {
     removeWhiteSpaceComments(contentDoc);
 
     console.log("Removed white spaces and comments");
-    
+
     // Cleanup the head and unnecessary tags
     let delTags = ["STYLE", "LINK", "META", "SCRIPT", "NOSCRIPT", "IFRAME", 
                    "SELECT", "DD", "INPUT", "TEXTAREA", "HEADER", "FOOTER",
@@ -496,6 +504,21 @@ function processContentDoc(contentDoc, thisURL, saveOffline) {
     original_link_anchor.textContent = link_symbol;
     original_link_div.appendChild(original_link_anchor);
     quick_tools_div.appendChild(original_link_div);
+
+    // Add a button to save page as PDF file
+    //
+    if (osVersion != null && osVersion != 'mac') {
+        let saveaspdf_div = createNode(contentDoc, {type: 'DIV', attr: {class:'tranquility_saveaspdf_div', id:'tranquility_saveaspdf_div' } });
+        saveaspdf_div.setAttribute('title', browser.i18n.getMessage("saveaspdf"));
+        let saveaspdf_anchor = createNode(contentDoc, {type: 'A', attr: {class:'tranquility_original_link_anchor', id:'tranquility_original_link_anchor' } });
+        saveaspdf_anchor.href = "javascript:void(0)";
+        saveaspdf_anchor.alt = browser.i18n.getMessage("saveaspdf");
+        saveaspdf_anchor.onclick = requestSaveAsPDF;
+        let saveaspdf_img = createNode(contentDoc, {type: 'IMG', attr: {class:'tranquility_saveaspdf_img', id:'tranquility_saveaspdf_img', height: '40px', width:'40px', src: browser.extension.getURL("icons/tranquility_pdf.png")}});
+        saveaspdf_anchor.appendChild(saveaspdf_img);
+        saveaspdf_div.appendChild(saveaspdf_anchor);
+        quick_tools_div.appendChild(saveaspdf_div);
+    }
 
     console.log("Added all custom buttons and menus");
     
@@ -1057,6 +1080,13 @@ function removeAnchorAttributes(cdoc) {
     let c = cdoc.getElementsByTagName('A');
 
     for(let i=0; i < c.length; i++) {
+
+        // Do not process the tranquility_original_link_anchor
+        //
+        if (c[i].className == 'tranquility_original_link_anchor') {
+            continue;
+        }
+
         if(c[i].getAttribute('target')) {
             c[i].removeAttribute('target');
         }
@@ -1112,10 +1142,12 @@ function cloneImages(cdoc, collection) {
     // in data fields
     let images = cdoc.getElementsByTagName('IMG');
     for (let i = 0; i < images.length; i++) {
-        images[i].setAttribute('data-origWidth', images[i].width);
-        images[i].setAttribute('data-origHeight', images[i].height);
+        let img = new Image();
+        img.src = images[i].src;
+        img.setAttribute('data-dfsIndex', images[i].getAttribute('data-dfsIndex'));
+        img.alt = images[i].alt;
 
-        collection[images[i].src] = images[i].cloneNode(true);
+        collection[images[i].src] = img;
         console.log(images[i].src + ": " + images[i].alt);
     }
 }
@@ -1125,7 +1157,7 @@ function addBackImages(cdoc, imgs, indexMap) {
     let images = cdoc.body.getElementsByTagName('IMG');
     let imgMap = {};
     for (let i = 0; i < images.length; i++) {
-        imgMap[images[i].src] = 1;
+        imgMap[images[i].src] = i;
     }
 
     let children = cdoc.body.getElementsByTagName('*');
@@ -1153,6 +1185,7 @@ function addBackImages(cdoc, imgs, indexMap) {
         let prevSibling = null;
         let prevSiblingIdx = -1;
         let imgIdx = parseInt(img.getAttribute('data-dfsIndex'));
+        console.log(imgIdx);
         for (let i = 0; i < children.length; i++) {
             if (children[i].nodeType == 1) {
                 let idx = parseInt(children[i].getAttribute('data-dfsIndex'));
@@ -1202,6 +1235,31 @@ function deleteZeroSizeImages(cdoc) {
             images[i].parentNode.removeChild(images[i]);
         }
     }
+}
+
+// Send a message to the background script to return the OS Version
+//
+function requestOSVersion() {
+    if (osVersion == null) {
+        browser.runtime.sendMessage(
+        {
+         "action": "getOSVersion"
+        });
+    }
+}
+
+function updateOSVersion(version) {
+    console.log("Updating osVersion to: " + version);
+    osVersion = version;
+}
+
+// Send a message to the background script to invoke saveAsPDF for active tab
+//
+function requestSaveAsPDF() {
+    browser.runtime.sendMessage(
+    {
+     "action": "saveAsPDF"
+    });
 }
 
 /*

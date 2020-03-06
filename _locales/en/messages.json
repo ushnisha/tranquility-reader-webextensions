@@ -166,6 +166,11 @@
     "description" : "Text that indicates that the link symbol is the original source URL"
   },
 
+  "saveaspdf" : {
+    "message"     : "Save Page as PDF File",
+    "description" : "Button to save the processed page to a PDF file"
+  },
+
   "readLaterNotSupportedString" : {
     "message"     : "'Read Later' functionality is not supported in Private Browsing Mode",
     "description" : "IndexedDB is not available in the Private browsing mode"

@@ -4,7 +4,7 @@
  * cluttered web pages
  **********************************************************************
 
-   Copyright (c) 2012-2019 Arun Kunchithapatham
+   Copyright (c) 2012-2020 Arun Kunchithapatham
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -224,7 +224,6 @@ function handleImportInputClickEvent(event) {
     reader.readAsText(input_file);
 }
 
-
 function handleClickEvent(event) {
 
     let urlStr = getAnchorNode(event.target);
@@ -237,7 +236,17 @@ function handleClickEvent(event) {
         // and continue
         //
         if (urlStr.split("#")[0] == currentURL.split("#")[0]) {
-            console.log("Do nothing - we want to navigate to an anchor in the current page...");
+            // If we have clicked on the original_link anchor
+            // and really want to return to the original webpage,
+            // then load the page again (after stripping the #)
+            if (event.target.className == 'tranquility_original_link_anchor') {
+                event.preventDefault();
+                event.stopPropagation();
+                window.location.assign(urlStr.split("#")[0]);
+            }
+            else {
+                console.log("Do nothing - we want to navigate to an anchor in the current page...");
+            }
         }
         // Else...
         // Do not load link - instead request background page to load it and then

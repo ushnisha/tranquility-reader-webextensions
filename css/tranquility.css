@@ -4,7 +4,7 @@
  * cluttered web pages
  **********************************************************************
 
-   Copyright (c) 2012-2019 Arun Kunchithapatham
+   Copyright (c) 2012-2020 Arun Kunchithapatham
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -65,7 +65,7 @@ div.tranquility_innercontainer
   margin-top: 60px;
   font-family:Univers,Scala,Georgia,Verdana,Times,Helvetica; 
   text-align:justify;
-  line-height:140%;  
+  line-height:140%;
 }  
 
 div.tranquility 
@@ -489,4 +489,55 @@ div.tranquility_progress_bar
    span.tranquility_annotation {
      font-size: 15px;
    }
+}
+
+@media print {
+
+  .tranquility_container {
+      width:100% !important;
+  }
+
+  .tranquility div,
+  .tranquility p,
+  .tranquility span,
+  .tranquility code,
+  .tranquility pre,
+  .tranquility blockquote,
+  .tranquility ul,
+  .tranquility ol,
+  .tranquility li,
+  .tranquility figure,
+  .tranquility .wp-caption {
+    font-size: medium !important;
+    margin: 0 0 10px 0 !important;
+    padding: 0 !important;
+  }
+
+  .tranquility_quick_tools_div,
+  .tranquility_expand_menu_btn  {
+      visibility: hidden !important;
+  }
+
+  div:not([class^="tranquility"]) {
+      visibility: hidden !important;
+  }
+}
+
+@media all {
+  div[class*='social'],
+  div[class*='soc'],
+  div[class*='sharing'],
+  div[class^='header'],
+  div[class*='footer'],
+  div[class*='video'],
+  div[class*='advertising'],
+  div[class*='-ad-'],
+  header,
+  footer,
+  svg,
+  path,
+  line
+  {
+    visibility: hidden !important;
+  }
 }
