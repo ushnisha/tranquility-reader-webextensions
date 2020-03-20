@@ -62,6 +62,10 @@ Tranquility Reader are critical for you.
 Tranquility is provided under GPLv3 license.
 Copyright (C) 2012-2020 Arun Kunchithapatham
 
+## Privacy Policy:
+
+This addon *does not* collect or transmit any information to an external website. All processing and data storage is local to your browser. For more details, see the PRIVACY.md file.
+
 ## Feedback:
 
 Please use Github to send any feedback, bug reports, enhancement requests.

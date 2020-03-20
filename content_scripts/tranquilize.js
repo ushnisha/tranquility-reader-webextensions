@@ -117,7 +117,11 @@ function RunOnLoad() {
             url = currentURL;
         }
         console.log("url: " + url);
-        window.location.assign(url);
+
+        // Handle corner case when the url has a "#" tag
+        // this can prevent the window.location.assign from working!
+        //
+        window.location.assign(url.split("#")[0]);
     }
     // If tranquility has not been run, then "tranquilize" the document
     else {
@@ -494,6 +498,14 @@ function processContentDoc(contentDoc, thisURL, saveOffline) {
     let quick_tools_div = createNode(contentDoc, {type: 'DIV', attr: {class:'tranquility_quick_tools_div', id:'tranquility_quick_tools_div' } });
     contentDoc.body.insertBefore(quick_tools_div, contentDoc.body.firstChild);
 
+    // Add a link to the preferences page for quick access rather than to go through about:addons
+    let prefs_link_div = createNode(contentDoc, {type: 'DIV', attr: {class:'tranquility_prefs_link_div', id:'tranquility_prefs_link_div' } });
+    prefs_link_div.setAttribute('title', browser.i18n.getMessage("prefslink"));
+    let prefs_symbol = '\u2699';
+    prefs_link_div.textContent = prefs_symbol;
+    prefs_link_div.addEventListener("click", handleShowPreferencesClickEvent, false);
+    quick_tools_div.appendChild(prefs_link_div);
+
     // Add a link to the original webpage for quick navigation/copying at the top of the page
     let original_link_div = createNode(contentDoc, {type: 'DIV', attr: {class:'tranquility_original_link_div', id:'tranquility_original_link_div' } });
     original_link_div.setAttribute('title', browser.i18n.getMessage("originallink"));
@@ -507,16 +519,13 @@ function processContentDoc(contentDoc, thisURL, saveOffline) {
 
     // Add a button to save page as PDF file
     //
-    if (osVersion != null && osVersion != 'mac') {
+    if (osVersion != null && osVersion != 'mac' && osVersion != 'android') {
         let saveaspdf_div = createNode(contentDoc, {type: 'DIV', attr: {class:'tranquility_saveaspdf_div', id:'tranquility_saveaspdf_div' } });
         saveaspdf_div.setAttribute('title', browser.i18n.getMessage("saveaspdf"));
-        let saveaspdf_anchor = createNode(contentDoc, {type: 'A', attr: {class:'tranquility_original_link_anchor', id:'tranquility_original_link_anchor' } });
-        saveaspdf_anchor.href = "javascript:void(0)";
-        saveaspdf_anchor.alt = browser.i18n.getMessage("saveaspdf");
-        saveaspdf_anchor.onclick = requestSaveAsPDF;
         let saveaspdf_img = createNode(contentDoc, {type: 'IMG', attr: {class:'tranquility_saveaspdf_img', id:'tranquility_saveaspdf_img', height: '40px', width:'40px', src: browser.extension.getURL("icons/tranquility_pdf.png")}});
-        saveaspdf_anchor.appendChild(saveaspdf_img);
-        saveaspdf_div.appendChild(saveaspdf_anchor);
+        saveaspdf_img.alt = browser.i18n.getMessage("saveaspdf");
+        saveaspdf_div.appendChild(saveaspdf_img);
+        saveaspdf_div.addEventListener("click", handleSaveAsPDFClickEvent, false);
         quick_tools_div.appendChild(saveaspdf_div);
     }
 
@@ -1251,15 +1260,6 @@ function requestOSVersion() {
 function updateOSVersion(version) {
     console.log("Updating osVersion to: " + version);
     osVersion = version;
-}
-
-// Send a message to the background script to invoke saveAsPDF for active tab
-//
-function requestSaveAsPDF() {
-    browser.runtime.sendMessage(
-    {
-     "action": "saveAsPDF"
-    });
 }
 
 /*

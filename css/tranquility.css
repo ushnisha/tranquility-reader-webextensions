@@ -191,22 +191,6 @@ font.tranquility
   line-height:140%;  
 } 
 
-iframe.tranquility_dictionary
-{
-  font-family:Univers,Scala,Georgia,Verdana,Times,Helvetica; 
-  text-align:justify;
-  line-height:140%;  
-  border-left: solid 5px silver;
-  border-top: solid 5px silver;
-  border-bottom: solid 5px silver;
-  border-right: solid 5px silver;
-  border-radius: 15px;
-  top:15%;
-  height: 70%;
-  z-index: 9999990;
-  position: fixed;
-}
-
 div.tranquility_more_links_btn
 {
   font-family: Univers,Scala,Georgia,Verdana,Times,Helvetica; 
@@ -298,6 +282,22 @@ div.tranquility_quick_tools_div
 }
 
 div.tranquility_original_link_div
+{
+  font-family: Univers,Scala,Georgia,Verdana,Times,Helvetica;
+  font-size: 20px;
+  z-index: 9999980;
+  text-align: right;
+}
+
+div.tranquility_saveaspdf_div
+{
+  font-family: Univers,Scala,Georgia,Verdana,Times,Helvetica;
+  font-size: 20px;
+  z-index: 9999980;
+  text-align: right;
+}
+
+div.tranquility_prefs_link_div
 {
   font-family: Univers,Scala,Georgia,Verdana,Times,Helvetica;
   font-size: 20px;
@@ -513,6 +513,7 @@ div.tranquility_progress_bar
     padding: 0 !important;
   }
 
+  .tranquility_progress_bar,
   .tranquility_quick_tools_div,
   .tranquility_expand_menu_btn  {
       visibility: hidden !important;
@@ -529,9 +530,12 @@ div.tranquility_progress_bar
   div[class*='sharing'],
   div[class^='header'],
   div[class*='footer'],
+  div[class^='sidebar'],
+  div[class*='navigation'],
   div[class*='video'],
   div[class*='advertising'],
   div[class*='-ad-'],
+  aside[class*='social'],
   header,
   footer,
   svg,

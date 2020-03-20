@@ -1,3 +1,27 @@
+## Version 3.0.16:
+
+* Enable keyboard shortcut available with legacy version (Ctrl+Alt+T)
+
+* New keyboard option to launch preferences page (Ctrl+Alt+J)
+
+* New keyboard option to launch saved/offline pages (Ctrl+Alt+K)
+
+* Keyboard shortcuts are user customizable.  Refer to the webpage:
+  https://support.mozilla.org/en-US/kb/manage-extension-shortcuts-firefox
+
+* Fix progress bar visibility bug when saving transformed page as PDF
+
+* Fix bug in not reverting to original page when clicking on browser action
+  icon (when the URL has a "#" reference
+
+* Ability to view offline pages from the preferences page.  This avoids the
+  need to first run the extension on some page before a user can access the
+  saved/offline pages
+
+* Added user friendly privacy policy statement and explanation of permissions
+  used by the extension
+
+--------------------------------
 
 ## Version 3.0.15:
 

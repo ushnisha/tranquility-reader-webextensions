@@ -138,7 +138,6 @@ function deletePreset(e) {
     
 function restoreOptions() {
 
-
     let onGetting = function(result) {
         if (browser.runtime.lastError) {
             console.log(browser.runtime.lastError);
@@ -250,6 +249,13 @@ function loadPresetFormats() {
 
 }
 
+function callViewTranquilityOfflinePages() {
+    browser.runtime.sendMessage(
+      {
+          "action": "RunTranquilityViewOfflinePages"
+      });
+}
+
 function callExportTranquilityOfflinePages() {
     browser.runtime.sendMessage(
       {
@@ -280,9 +286,11 @@ function setBrowserActionIcon() {
         });
 }
 
+
 document.addEventListener("DOMContentLoaded", restoreOptions);
 document.getElementById("tranquility_save_changes").addEventListener("click", saveOptions);
 document.getElementById("tranquility_delete_preset").addEventListener("click", deletePreset);
+document.getElementById("tranquility_view_offline_pages").addEventListener("click", callViewTranquilityOfflinePages);
 document.getElementById("tranquility_export_offline_pages").addEventListener("click", callExportTranquilityOfflinePages);
 document.getElementById("tranquility_import_offline_pages").addEventListener("click", callImportTranquilityOfflinePages);
 document.getElementById("tranquility_preset_combination").addEventListener("change", loadPresetFormats);

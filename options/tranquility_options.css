@@ -39,39 +39,47 @@
   font-size: 1em;
   background-color: #F0F8FF;
   cursor: pointer;
-  display: flex; 
+  display: flex;
   justify-content: space-between;
 }
 
 .tranquility_delete_button {
-  text-align: center; 
-  border: 1px solid #808080; 
+  text-align: center;
+  border: 1px solid #808080;
   font-size: 1.5em;
-  flex:0 0 20%; 
+  flex:0 0 20%;
   background-color:#E6E6FA;
 }
 
 .tranquility_save_button {
-  text-align: center; 
-  border: 1px solid #808080; 
+  text-align: center;
+  border: 1px solid #808080;
   font-size: 1.5em;
-  flex:0 0 20%; 
+  flex:0 0 20%;
+  background-color:#E6E6FA;
+}
+
+.tranquility_view_offline_pages {
+  text-align: center;
+  border: 1px solid #808080;
+  font-size: 1.5em;
+  flex:0 0 20%;
   background-color:#E6E6FA;
 }
 
 .tranquility_export_offline_pages {
-  text-align: center; 
-  border: 1px solid #808080; 
+  text-align: center;
+  border: 1px solid #808080;
   font-size: 1.5em;
-  flex:0 0 20%; 
+  flex:0 0 20%;
   background-color:#E6E6FA;
 }
 
 .tranquility_import_offline_pages {
-  text-align: center; 
-  border: 1px solid #808080; 
+  text-align: center;
+  border: 1px solid #808080;
   font-size: 1.5em;
-  flex:0 0 20%; 
+  flex:0 0 20%;
   background-color:#E6E6FA;
 }
 

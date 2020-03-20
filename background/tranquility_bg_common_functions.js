@@ -416,6 +416,22 @@ function saveAsPDF() {
      });
 }
 
+
+function openOptionsPage() {
+
+    let onOpening = function(result) {
+        if (browser.runtime.lastError) {
+            console.log(browser.runtime.lastError);
+        }
+        else {
+            console.log("Opened options page");
+        }
+    }
+
+    let openOptionsPage = browser.runtime.openOptionsPage(onOpening);
+}
+
+
 function handleStartup() {
   setBrowserActionIcon();
 }

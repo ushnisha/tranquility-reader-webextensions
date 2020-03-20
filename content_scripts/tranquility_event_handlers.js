@@ -224,7 +224,32 @@ function handleImportInputClickEvent(event) {
     reader.readAsText(input_file);
 }
 
+function handleSaveAsPDFClickEvent(event) {
+    console.log("Got into Save As PDF click event handler");
+    event.preventDefault();
+    event.stopPropagation();
+    console.log("Stopped Propagation");
+    browser.runtime.sendMessage(
+    {
+     "action": "saveAsPDF"
+    });
+}
+
+function handleShowPreferencesClickEvent(event) {
+    console.log("Got into Show Preferences click event handler");
+    event.preventDefault();
+    event.stopPropagation();
+    console.log("Stopped Propagation");
+    browser.runtime.sendMessage(
+    {
+     "action": "openOptionsPage"
+    });
+}
+
 function handleClickEvent(event) {
+
+    console.log("Entered handle click event via click on: " + event.target.id);
+    console.log(event.target);
 
     let urlStr = getAnchorNode(event.target);
     // Handle tranquility_continuous browsing
@@ -334,7 +359,9 @@ function addBackEventListeners() {
         "tranquility_view_notes"            : handleAnnotationViewOrNoteClickEvent,
         "tranquility_delete_offline_link"   : handleDeleteOfflineLinkClickEvent,
         "tranquility_offline_link"          : handleLoadOfflineLinkClickEvent,
-        "tranquility_expand_menu_btn"       : handleExpandMenuButtonClickEvent
+        "tranquility_expand_menu_btn"       : handleExpandMenuButtonClickEvent,
+        "tranquility_saveaspdf_div"         : handleSaveAsPDFClickEvent,
+        "tranquility_prefs_link_div"        : handleShowPreferencesClickEvent
 
     };
 

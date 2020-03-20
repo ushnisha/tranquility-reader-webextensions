@@ -79,7 +79,7 @@ function applyFontPreferences() {
     let elems = document.documentElement.getElementsByTagName("*");
     let include_tags = ["tranquility", "tranquility_annotation_note", "tranquility_annotation_text", 
                         "tranquility_annotation_selection", "tranquility_annotation", 
-                        "tranquility_view_notes"];
+                        "tranquility_view_notes", "tranquility_offline_links"];
     
     let onGetting = function(result) {
         if (browser.runtime.lastError) {

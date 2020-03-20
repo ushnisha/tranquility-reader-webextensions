@@ -83,6 +83,10 @@ let processMessage = function (message) {
         console.log("Saving page as PDF file");
         saveAsPDF();
     }
+    else if (message.action == "openOptionsPage") {
+        console.log("Opening options Page");
+        openOptionsPage();
+    }
     else {
         console.log("Unsupported message: " + message);
     }
@@ -97,6 +101,12 @@ let gettingInfo = browser.runtime.getPlatformInfo(function (info) {
         browser.commands.onCommand.addListener(function(command) {
             if (command == "run-tranquility") {
                 runTranquility("Run");
+            }
+            else if (command == "show-tranquility-preferences") {
+                openOptionsPage();
+            }
+            else if (command == "show-tranquility-offline-pages") {
+                displayTranquilityOfflinePages();
             }
         });
     }
