@@ -18,6 +18,10 @@
   need to first run the extension on some page before a user can access the
   saved/offline pages
 
+* Removed "Save as PDF" functionality from Android version.  Android already
+  has such an option on the Firefox-Page menu which works just fine.  The icon
+  only clutters up the usually smaller screen in Android phones/devices
+
 * Added user friendly privacy policy statement and explanation of permissions
   used by the extension
 
