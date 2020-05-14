@@ -402,17 +402,35 @@ function saveAsPDF() {
     browser.tabs.query({active: true, currentWindow: true}, function(tabs) {
         let active_tab = tabs[0];
 
-        let onSaving = function(tab) {
+        let onGetting = function(result) {
+
             if (browser.runtime.lastError) {
                 console.log(browser.runtime.lastError);
             }
             else {
-                console.log("Saved active tab as PDF");
+
+                // Default to letter dimension in default units of length
+                let paperwidth = 8.5;
+                let paperheight = 11.0;
+
+                if (result.tranquility_pdf_paper_size == "A4") {
+                    paperwidth = 8.27;
+                    paperheight = 11.69;
+                }
+
+                let onSaving = function(tab) {
+                    if (browser.runtime.lastError) {
+                        console.log(browser.runtime.lastError);
+                    }
+                    else {
+                        console.log("Saved active tab as PDF");
+                    }
+                };
+                let saving = browser.tabs.saveAsPDF({'shrinkToFit': false, 'paperWidth': paperwidth,
+                                                     'paperHeight': paperheight}, onSaving);
             }
-        };
-
-        let saving = browser.tabs.saveAsPDF({'shrinkToFit': false}, onSaving);
-
+        }
+        let getting = browser.storage.local.get("tranquility_pdf_paper_size", onGetting);
      });
 }
 

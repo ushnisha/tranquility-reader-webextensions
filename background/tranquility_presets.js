@@ -36,7 +36,8 @@ let tranquility_presets =
                "tranquility_font_size"                  : "22",
                "tranquility_reading_width"              : "55",
                "tranquility_line_height"                : "140",
-               "tranquility_text_align"                 : "left"
+               "tranquility_text_align"                 : "left",
+               "tranquility_pdf_paper_size"             : "Letter"
              },
 
   "Android": 
@@ -48,7 +49,8 @@ let tranquility_presets =
                "tranquility_font_size"                  : "15",
                "tranquility_reading_width"              : "95",
                "tranquility_line_height"                : "140",
-               "tranquility_text_align"                 : "left"
+               "tranquility_text_align"                 : "left",
+               "tranquility_pdf_paper_size"             : "Letter"
              },
 
   "Dark":   
@@ -60,7 +62,8 @@ let tranquility_presets =
                "tranquility_font_size"                  : "22",
                "tranquility_reading_width"              : "55",
                "tranquility_line_height"                : "140",
-               "tranquility_text_align"                 : "left"
+               "tranquility_text_align"                 : "left",
+               "tranquility_pdf_paper_size"             : "Letter"
              },
 
   "Sepia":   
@@ -72,7 +75,8 @@ let tranquility_presets =
                "tranquility_font_size"                  : "22",
                "tranquility_reading_width"              : "55",
                "tranquility_line_height"                : "140",
-               "tranquility_text_align"                 : "left"
+               "tranquility_text_align"                 : "left",
+               "tranquility_pdf_paper_size"             : "Letter"
              },
 
   "Matrix":   
@@ -84,7 +88,8 @@ let tranquility_presets =
                "tranquility_font_size"                  : "22",
                "tranquility_reading_width"              : "55",
                "tranquility_line_height"                : "140",
-               "tranquility_text_align"                 : "left"
+               "tranquility_text_align"                 : "left",
+               "tranquility_pdf_paper_size"             : "Letter"
              },
 
   "High Contrast Large Font":   
@@ -96,6 +101,7 @@ let tranquility_presets =
                "tranquility_font_size"                  : "54",
                "tranquility_reading_width"              : "75",
                "tranquility_line_height"                : "140",
-               "tranquility_text_align"                 : "left"
+               "tranquility_text_align"                 : "left",
+               "tranquility_pdf_paper_size"             : "Letter"
              }
 };

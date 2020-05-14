@@ -22,7 +22,9 @@ The extension stores your preferences/settings locally on your browser.  Similar
 
 For Mozilla's end user friendly explanations of the different permissions please refer to [this page](https://support.mozilla.org/en-US/kb/permission-request-messages-firefox-extensions?as=u&utm_source=inproduct).
 
-* "<all_urls>":  Since the extension can be run on any page with sufficient text, it requests permission to modify "all urls".  This may raise a warning message that the extension can read all your data as well as information you enter in forms, like usernames, passwords etc.  Unfortunately, without this permission, I will need to create a whitelist/blacklist that makes using the extension difficult for a novice user.  At the time of writing this policy, Tranquility Reader is a "RECOMMENDED" extension which means that the Firefox staff have carefully reviewed this extension and deemed it safe for use.
+* "<all_urls>":  In the "continuous browsing mode", the extension may try to fetch data from a link that has a different origin from that of the activeTab in which it has already been run. To do this, the "activeTab" permission alone is insufficient and we need the "<all_urls>" permission.
+
+This permission request  may raise a warning message that the extension can read all your data as well as information you enter in forms, like usernames, passwords etc.  Unfortunately, without this permission, I will need to create a whitelist/blacklist that makes using the extension difficult for a novice user.  At the time of writing this policy, Tranquility Reader is a "RECOMMENDED" extension which means that the Firefox staff have carefully reviewed this extension and deemed it safe for use.
 
 * "activeTab": Modify data on the current tab (required when running the extension to modify the web page and make it readable).
 

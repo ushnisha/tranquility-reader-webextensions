@@ -148,7 +148,7 @@ function applyAnnotationHighlightColorPreferences() {
         }
         else {
             console.log("Applying Annotation Highlight Color Preferences");
-            let elems = document.documentElement.getElementsByTagName("tranquility_annotation_selection");
+            let elems = document.documentElement.getElementsByClassName("tranquility_annotation_selection");
             for(let i=0; i < elems.length; i++) {
                 elems[i].style.backgroundColor = result.tranquility_annotation_highlight_color;
             }  

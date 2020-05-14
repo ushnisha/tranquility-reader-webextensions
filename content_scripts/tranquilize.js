@@ -251,6 +251,21 @@ function processContentDoc(contentDoc, thisURL, saveOffline) {
         allElems[i].parentNode.replaceChild(allElems[i].cloneNode(true), allElems[i]);
     }
 
+    // Remove all script tags
+    //
+    let scriptTags = ["SCRIPT", "NOSCRIPT"];
+    for (let i = 0; i < scriptTags.length; i++) {
+        removeTag(contentDoc, scriptTags[i]);
+    }
+
+    // Now replace document.documentElement; It looks like we need this step for
+    // the window.getComputedStyle() function to work correctly
+    // we can then copy over the document to the contentDoc variable and continue
+    // as before
+    //
+    document.replaceChild(contentDoc.documentElement, document.documentElement);
+    contentDoc = document;
+
     // Delete All Hidden Elements before doing anything further
     // These could be hidden images, div, spans, spacers, etc...
     // Delete any content that has display = 'none' or visibility == 'hidden'
@@ -331,7 +346,7 @@ function processContentDoc(contentDoc, thisURL, saveOffline) {
     console.log("Removed white spaces and comments");
 
     // Cleanup the head and unnecessary tags
-    let delTags = ["STYLE", "LINK", "META", "SCRIPT", "NOSCRIPT", "IFRAME", 
+    let delTags = ["STYLE", "LINK", "META", "SCRIPT", "NOSCRIPT", "IFRAME",
                    "SELECT", "DD", "INPUT", "TEXTAREA", "HEADER", "FOOTER",
                    "NAV", "FORM", "BUTTON", "PICTURE", "FIGURE", "SVG"];
     for(let i=0; i<delTags.length; i++) {
@@ -536,20 +551,14 @@ function processContentDoc(contentDoc, thisURL, saveOffline) {
     //
     removeAnchorAttributes(contentDoc);
     console.log("Removed Anchor attributes");
-    console.log("Finished processing document");
-    
-    // Now, we are ready to replace the current webpage document with the processed contentDoc
-    //
-    // First remove all event listeners from the old body by replacing it with the clone
-    let old_body = document.body;
-    // sometimes, document has not even loaded the body; in these cases, there is nothing to do
-    if (old_body) {
-        let new_body = old_body.cloneNode(true);
-        document.documentElement.replaceChild(new_body, old_body);
-    }
 
-    // Next replace the documentElement with the processed contentDoc
-    document.replaceChild(contentDoc.documentElement, document.documentElement);
+    // Create a div to list the originalURL explicity at the top of the article
+    //
+    let original_url_div = createNode(contentDoc, {type: 'DIV', attr: {class:'tranquility_annotation_selection', id:'tranquility_original_url_div' } });
+    original_url_div.textContent = "Source : " + thisURL;
+    cdiv_inner.insertBefore(original_url_div, cdiv_inner.firstChild);
+
+    console.log("Finished processing document");
 
     // Finally apply all preferences and add Event listeners
     applyAllTranquilityPreferences();
@@ -643,8 +652,13 @@ function deleteHiddenElements(cdoc, tagString) {
         let cssVisibility = cssProp.getPropertyValue("visibility");
         let cssDisplay = cssProp.getPropertyValue("display");
 
+        let cssHeight = cssProp.getPropertyValue("height");
+        let cssWidth = cssProp.getPropertyValue("width");
+
         if(((cssVisibility != undefined) && (cssVisibility == 'hidden')) ||
-           ((cssDisplay != undefined) && (cssDisplay == 'none'))) {
+           ((cssDisplay != undefined) && (cssDisplay == 'none')) ||
+           ((cssHeight != undefined) && (cssHeight == "0px")) ||
+           ((cssWidth != undefined) && (cssWidth == "0px"))) {
             elems[i].parentNode.removeChild(elems[i]);
         }
     }

@@ -41,7 +41,8 @@ function saveOptions(e) {
         tranquility_font_size:                  document.getElementById("tranquility_font_size").value,
         tranquility_reading_width:              document.getElementById("tranquility_reading_width").value,
         tranquility_line_height:                document.getElementById("tranquility_line_height").value,
-        tranquility_text_align:                 document.getElementById("tranquility_text_align").value
+        tranquility_text_align:                 document.getElementById("tranquility_text_align").value,
+        tranquility_pdf_paper_size:             document.getElementById("tranquility_pdf_paper_size").value
     };
 
     // First save all of the current settings in the individual options
@@ -162,7 +163,8 @@ function restoreOptions() {
                       "tranquility_link_color", "tranquility_annotation_highlight_color",
                       "tranquility_font_name", "tranquility_font_size", 
                       "tranquility_reading_width", "tranquility_line_height", 
-                      "tranquility_text_align", "tranquility_browser_action_icon"];
+                      "tranquility_text_align", "tranquility_browser_action_icon",
+                      "tranquility_pdf_paper_size"];
 
     // Set forms with values from storage.local (should exist since these were set during installation)
 
@@ -204,10 +206,13 @@ function restoreOptions() {
                         document.getElementById(elem_name).value = result.tranquility_line_height || "140";
                     }
                     else if (opt_name == "tranquility_text_align") {
-                        document.getElementById(elem_name).value = result.tranquility_text_align;
+                        document.getElementById(elem_name).value = result.tranquility_text_align || "left";
                     }
                     else if (opt_name == "tranquility_browser_action_icon") {
                         document.getElementById(elem_name).value = result.tranquility_browser_action_icon;
+                    }
+                    else if (opt_name == "tranquility_pdf_paper_size") {
+                        document.getElementById(elem_name).value = result.tranquility_pdf_paper_size || "Letter";
                     }
                 }
             }

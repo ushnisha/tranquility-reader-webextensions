@@ -1,3 +1,16 @@
+## Version 3.0.17:
+
+* Allow users to configure A4/Letter paper size in extension preferences
+  when saving the transformed page as a PDF
+
+* Add the original/source link to the top of the transformed page.  This
+  is useful when the page is saved as a PDF or offline reading and the
+  users have forgotten and need to refer to the original source.
+
+* Bug fix so that we identify computed CSS style properties correctly
+
+--------------------------------
+
 ## Version 3.0.16:
 
 * Enable keyboard shortcut available with legacy version (Ctrl+Alt+T)

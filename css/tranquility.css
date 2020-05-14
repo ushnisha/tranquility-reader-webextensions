@@ -175,6 +175,9 @@ pre.tranquility_pre
   line-height:140%;  
   white-space: pre-wrap;
   word-break: keep-all;
+  border: solid 1px silver;
+  border-radius: 5px;
+  padding: 10px;
 }
 
 li.tranquility 
@@ -204,6 +207,7 @@ div.tranquility_more_links_btn
   text-align: center;
   float: left;
   margin: 0 10px 10px 0;
+  cursor: pointer;
 }
 
 div.tranquility_read_later_btn
@@ -219,6 +223,7 @@ div.tranquility_read_later_btn
   text-align: center;
   float: left;
   margin: 0 10px 10px 0;
+  cursor: pointer;
 }
 
 div.tranquility_offline_links_btn
@@ -234,6 +239,7 @@ div.tranquility_offline_links_btn
   text-align: center;
   float: left;
   margin: 0 10px 10px 0;
+  cursor: pointer;
 }
 
 div.tranquility_viewnotes_btn
@@ -249,6 +255,7 @@ div.tranquility_viewnotes_btn
   text-align: center;
   float: left;
   margin: 0 10px 10px 0;
+  cursor: pointer;
 }
 
 div.tranquility_expand_menu_btn
@@ -263,6 +270,7 @@ div.tranquility_expand_menu_btn
   position: fixed;
   bottom: 20px;
   right: 20px;
+  cursor: pointer;
 }
 
 div.tranquility_quick_tools_div
@@ -287,6 +295,7 @@ div.tranquility_original_link_div
   font-size: 20px;
   z-index: 9999980;
   text-align: right;
+  cursor: pointer;
 }
 
 div.tranquility_saveaspdf_div
@@ -295,6 +304,7 @@ div.tranquility_saveaspdf_div
   font-size: 20px;
   z-index: 9999980;
   text-align: right;
+  cursor: pointer;
 }
 
 div.tranquility_prefs_link_div
@@ -303,6 +313,7 @@ div.tranquility_prefs_link_div
   font-size: 20px;
   z-index: 9999980;
   text-align: right;
+  cursor: pointer;
 }
 
 div.tranquility_menu
