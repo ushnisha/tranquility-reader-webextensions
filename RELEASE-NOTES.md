@@ -1,3 +1,14 @@
+## Version 3.0.18:
+
+* Bug fix for regression on some pages.  The computed height and width
+  property were used to identify hidden elements, but the logic used
+  was incorrect.  Undoing this change.
+
+* Minor change to try and remove more unnecessary images that get
+  restored even though their parent elements were removed
+
+--------------------------------
+
 ## Version 3.0.17:
 
 * Allow users to configure A4/Letter paper size in extension preferences

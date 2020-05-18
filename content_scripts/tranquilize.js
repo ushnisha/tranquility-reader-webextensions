@@ -284,15 +284,6 @@ function processContentDoc(contentDoc, thisURL, saveOffline) {
     deleteZeroSizeImages(contentDoc);
     console.log("Removed Zero Sized Images");
 
-    // First get a dfs search to index every single element in the
-    // document
-    let indexMap = {};
-    indexElements(indexMap, contentDoc.body);
-
-    // Clone all the image nodes for later insertion
-    let imgCollection = {};
-    cloneImages(contentDoc.body, imgCollection);
-
     // Ensure that we set a base element before we replace the
     // web page with the new content; otherwise, relative URL
     // links will be based on the incorrect URL present in the
@@ -326,7 +317,7 @@ function processContentDoc(contentDoc, thisURL, saveOffline) {
     let supporting_links = getSupportingLinks(contentDoc);
     
     console.log("Got supporting links...");
-    
+
     // If there is a single "ARTICLE" tag, then replace the entire document content with just the
     // contents of the article.  Trust that the content creator has done the correct thing
     //
@@ -354,12 +345,27 @@ function processContentDoc(contentDoc, thisURL, saveOffline) {
     }
     
     console.log("Cleaned up unnecessary tags and headers");
-   
+
     // Reformat the header and use custom css
     reformatHeader(contentDoc);
 
     console.log("Reformatted headers...");
 
+    // Moving the indexElements and cloneImages calls after we have
+    // cleaned up the unnecessary tags.  This can help filter of any
+    // unneccessary icons ad images that are in these deleted tags
+    // and get added back later.
+    //
+    // First get a dfs search to index every single element in the
+    // document
+    let indexMap = {};
+    indexElements(indexMap, contentDoc.body);
+
+    // Clone all the image nodes for later insertion
+    let imgCollection = {};
+    cloneImages(contentDoc.body, imgCollection);
+
+    // Ensure that we set a base element before we replace the
     // Processing for ads related DIV's; several websites seem to use LI elements
     // within the ads DIV's, or for navigation links which are not required in the 
     // Tranquility view.  In this section, we try to delete DIV's that have at least 
@@ -652,13 +658,8 @@ function deleteHiddenElements(cdoc, tagString) {
         let cssVisibility = cssProp.getPropertyValue("visibility");
         let cssDisplay = cssProp.getPropertyValue("display");
 
-        let cssHeight = cssProp.getPropertyValue("height");
-        let cssWidth = cssProp.getPropertyValue("width");
-
         if(((cssVisibility != undefined) && (cssVisibility == 'hidden')) ||
-           ((cssDisplay != undefined) && (cssDisplay == 'none')) ||
-           ((cssHeight != undefined) && (cssHeight == "0px")) ||
-           ((cssWidth != undefined) && (cssWidth == "0px"))) {
+           ((cssDisplay != undefined) && (cssDisplay == 'none'))) {
             elems[i].parentNode.removeChild(elems[i]);
         }
     }
