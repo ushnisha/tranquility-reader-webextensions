@@ -2,7 +2,7 @@
 
     "manifest_version": 2,
     "name": "__MSG_extensionName__",
-    "version": "3.0.18",
+    "version": "3.0.19",
 
     "description": "__MSG_extensionDescription__",
     "homepage_url": "https://tranquility.ushnisha.com/",
@@ -23,7 +23,6 @@
     "permissions": [
         "<all_urls>",
         "activeTab",
-        "tabs",
         "storage",
         "alarms",
         "contextMenus"

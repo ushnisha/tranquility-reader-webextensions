@@ -246,6 +246,19 @@ function handleShowPreferencesClickEvent(event) {
     });
 }
 
+function handlePageDownClickEvent(event) {
+    event.preventDefault();
+    event.stopPropagation();
+    window.scrollBy(0, window.innerHeight);
+}
+
+function handlePageUpClickEvent(event) {
+    event.preventDefault();
+    event.stopPropagation();
+    window.scrollBy(0, -window.innerHeight);
+}
+
+
 function handleClickEvent(event) {
 
     console.log("Entered handle click event via click on: " + event.target.id);

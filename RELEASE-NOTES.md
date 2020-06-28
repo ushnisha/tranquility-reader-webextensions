@@ -1,3 +1,24 @@
+## Version 3.0.19:
+
+* Adding missing heading/title if it has been removed during processing
+
+* Move logic to hide/remove spurious elements from css to javascript code
+  for better control; added additional filtering logic
+
+* Add scroll buttons (for page-up/page-down) for people who prefer mouse
+  to keyboard (and for mobile users)
+
+* Always scroll back to the top of the page/article after transforming
+  a page
+
+* Try to retain images within an article/main tag
+
+* Minor bug fixes and code restructuring/simplification
+
+* Removed unnecessary "tabs" permission request since we are not using it
+
+--------------------------------
+
 ## Version 3.0.18:
 
 * Bug fix for regression on some pages.  The computed height and width

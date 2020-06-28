@@ -91,6 +91,9 @@ function applyFontPreferences() {
                 if(include_tags.indexOf(elems[i].getAttribute('class')) != -1) {
                     elems[i].style.fontSize = result.tranquility_font_size + "px";
                     elems[i].style.fontFamily = result.tranquility_font_name;
+                    if (elems[i].nodeName == "H1") {
+                        elems[i].style.fontSize = "150%";
+                    }
                 }
             }
         }

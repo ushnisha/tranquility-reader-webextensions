@@ -143,7 +143,7 @@ function RunOnSelection() {
     // Typically used when the page has at least partially loaded and user has selected some text
     // However this should work even if we are running on an already processed page; maybe the user wants to
     // prune the tranquilized content further and read just a portion of the article
-    
+
     // Stop loading the document if it has not completed loading
     if(document.readyState != "complete") {
         window.stop();
@@ -178,6 +178,7 @@ function RunAndSaveOnLoad() {
         saveContentOffline(currentURL, document.cloneNode(true));
         return;
     }
+
     // If tranquility has not been run, then "tranquilize" the document and then save the content offline
     if(document.readyState != "complete") {
         window.stop();
@@ -193,7 +194,7 @@ function processXMLHTTPRequest(url, saveOffline) {
 
     // Handle corner case to avoid mixed content security warnings/errors
     let getURL = url;
-    if (getURL.substr(5) == 'https') {
+    if (getURL.substr(0,5) == 'https') {
         console.log(getURL);
         getURL = getURL.replace(/^http\:/, 'https:');
         console.log(getURL);
@@ -245,11 +246,12 @@ function processResponse (oXHRDoc, thisURL, saveOffline) {
 
 function processContentDoc(contentDoc, thisURL, saveOffline) {
 
-    // Remove all event handlers by cloning every single element
-    let allElems = contentDoc.getElementsByTagName("*");
-    for (let i = 0; i < allElems.length; i++) {
-        allElems[i].parentNode.replaceChild(allElems[i].cloneNode(true), allElems[i]);
-    }
+    // Remove all event handlers by "deep" cloning the body
+    // instead of cloning each element (saves some time and
+    // the code is cleaner)
+    //
+    let docBody = contentDoc.body;
+    docBody.parentNode.replaceChild(docBody.cloneNode(true), docBody);
 
     // Remove all script tags
     //
@@ -266,14 +268,61 @@ function processContentDoc(contentDoc, thisURL, saveOffline) {
     document.replaceChild(contentDoc.documentElement, document.documentElement);
     contentDoc = document;
 
+    // First get a dfs search to index every single element in the
+    // document
+    let indexMap = {};
+    indexElements(indexMap, contentDoc.body);
+
+    // Backup any title/heading related tags to restore in case they are removed
+    // by the deletion logic
+    //
+    let hElemsMap = {};
+    cloneHElems(hElemsMap, contentDoc);
+
+    // Remove some elements that are typically like hidden elements
+    // but can add to the text size of a document; remove them so that
+    // their effect on later logic (textContent.length value) is minimized
+    //
+    let likeHidden = ["HEADER", "FOOTER", "NAV", "SVG", "PATH", "LINK", "STYLE"];
+    for (let i = 0; i < likeHidden.length; i++) {
+        removeTag(contentDoc, likeHidden[i]);
+    }
+
     // Delete All Hidden Elements before doing anything further
     // These could be hidden images, div, spans, spacers, etc...
     // Delete any content that has display = 'none' or visibility == 'hidden'
     // This was originally done only for spacer images, but seems like a meaningful thing
     // to do for all elements, given that all scripts are also deleted in the Tranquility view
     //
+
+    // First get the size of the document before removing hidden content and make a clone
+    // in case we need to revert
+    //
+    let sizeBeforeDelHidden = computeSize(contentDoc.documentElement);
+    let bkpContentDoc = contentDoc.cloneNode(true);
+
     deleteHiddenElements(contentDoc, "*");
     console.log("Removed Hidden elements");
+
+    let sizeAfterDelHidden = computeSize(contentDoc.documentElement);
+
+    // If the content after deletion of hidden elements is less than 10% of the
+    // content before deletion of hidden elements and the size after deletion
+    // is less than 200 characters, then it is possible that the
+    // website is hiding content within hidden elements
+    //
+    // Revert to the document state before this step and continue...
+    //
+    if (sizeAfterDelHidden < 200 && sizeAfterDelHidden / sizeBeforeDelHidden < 0.1) {
+        console.log("Problem removing hidden elements...");
+        console.log("Website may be hiding content within hidden elements...");
+        console.log("Reverting to backedup document and continuing...");
+        console.log("Size Before: ", sizeBeforeDelHidden, "Size After: ", sizeAfterDelHidden);
+        document.replaceChild(bkpContentDoc.documentElement, document.documentElement);
+        contentDoc = document;
+    }
+
+    console.log(computeSize(contentDoc.documentElement));
 
     // Remove zero sized images; this is just another way of hiding elements
     // otherwise, these can get cloned and reappear
@@ -309,26 +358,48 @@ function processContentDoc(contentDoc, thisURL, saveOffline) {
     for (let i = all_links.length - 1; i >= 0; i--) {
         let onclickVal = all_links[i].getAttribute('onclick');
         if (onclickVal != null) {
-            removeNodeRecursive(all_links[i]);
+            all_links[i].setAttribute('onclick', "void(0);");
         }
     }
-            
+
     // Collect any supporting links before processing the webpage
     let supporting_links = getSupportingLinks(contentDoc);
     
     console.log("Got supporting links...");
 
+    // If there is a single "MAIN" tag, then replace the entire document content with just the
+    // contents of the main tag.  Trust that the content creator has done the correct thing.
+    // If and article tag exists, then...
     // If there is a single "ARTICLE" tag, then replace the entire document content with just the
     // contents of the article.  Trust that the content creator has done the correct thing
+    // (this is because articles are supposed to be within the main tag)
     //
+    let mainsOrArticle = false;
+    let mains = contentDoc.getElementsByTagName("main");
     let articles = contentDoc.getElementsByTagName("article");
+    if (mains.length == 1) {
+        let docBody = contentDoc.body;
+        let mainContent = mains[0].cloneNode(true);
+        if (computeSize(mainContent) > 200) {
+            while (docBody.firstChild) {
+                docBody.removeChild(docBody.firstChild);
+            }
+            docBody.appendChild(mainContent);
+            console.log("Replaced body content with main contents...");
+            mainsOrArticle = true;
+        }
+    }
     if (articles.length == 1) {
         let docBody = contentDoc.body;
         let mainArticle = articles[0].cloneNode(true);
-        while (docBody.firstChild) {
-            docBody.removeChild(docBody.firstChild);
+        if (computeSize(mainArticle) > 200) {
+            while (docBody.firstChild) {
+                docBody.removeChild(docBody.firstChild);
+            }
+            docBody.appendChild(mainArticle);
+            console.log("Replaced body content with article contents...");
+            mainsOrArticle = true;
         }
-        docBody.appendChild(mainArticle);
     }
 
     // Remove unnecessary whitespaces and comments
@@ -341,25 +412,53 @@ function processContentDoc(contentDoc, thisURL, saveOffline) {
                    "SELECT", "DD", "INPUT", "TEXTAREA", "HEADER", "FOOTER",
                    "NAV", "FORM", "BUTTON", "PICTURE", "FIGURE", "SVG"];
     for(let i=0; i<delTags.length; i++) {
-        removeTag(contentDoc, delTags[i]);
+        let delTagExceptions = ["PICTURE", "FIGURE", "SVG"];
+        if (mainsOrArticle) {
+            if (!delTagExceptions.includes(delTags[i])) {
+                removeTag(contentDoc, delTags[i]);
+            }
+        }
+        else {
+            removeTag(contentDoc, delTags[i]);
+        }
     }
     
     console.log("Cleaned up unnecessary tags and headers");
+
+    // Cleanup elements that have classnames that are typically not main content
+    // This was included as a hidden element via css @media settings in 3.0.18
+    // but moving it to a regexp for more flexibility (borrowing idea from readability)
+    // since it is easier to undo the cleanup in javascript or add logic to skip
+    // certain elements that seem to have actual content in them
+    //
+    let unlikelyCandidates = /^social|soc|^header|footer|related|recommended|sponsored|action|navigation|promo|adCaption|comment|dfp|adHolder|billboard|slide|-ad-|disqus|more-stories/i
+    let nodeIter = getNodeIterator(contentDoc.body, unlikelyCandidates, "className");
+    let node = null;
+    while ((node = nodeIter.nextNode())) {
+        let exceptions = ["BODY", "MAIN", "ARTICLE"];
+        if (exceptions.includes(node.nodeName.toUpperCase())) {
+            continue;
+        }
+        let docSize = computeSize(contentDoc.body);
+        let nodeSize = computeSize(node);
+
+        if (nodeSize/docSize > 0.9) {
+            continue;
+        }
+        console.log("Removing node with classname: ", node.className);
+        console.log(nodeSize, docSize);
+        node.parentNode.removeChild(node);
+    }
 
     // Reformat the header and use custom css
     reformatHeader(contentDoc);
 
     console.log("Reformatted headers...");
 
-    // Moving the indexElements and cloneImages calls after we have
+    // Moving the cloneImage calls after we have
     // cleaned up the unnecessary tags.  This can help filter of any
     // unneccessary icons ad images that are in these deleted tags
     // and get added back later.
-    //
-    // First get a dfs search to index every single element in the
-    // document
-    let indexMap = {};
-    indexElements(indexMap, contentDoc.body);
 
     // Clone all the image nodes for later insertion
     let imgCollection = {};
@@ -389,7 +488,7 @@ function processContentDoc(contentDoc, thisURL, saveOffline) {
     for(let p=0; p < pruneTagList.length; p++) {
         pruneTag(contentDoc, pruneTagList[p], 0.0, minSize, totalSize);
     } 
-    // Next run with minsize 200 (for a reduced subset of the tags)
+    // Next run with minsize 5 (for a reduced subset of the tags)
     // Removed TD, TABLE, and DD for now
     pruneTagList = ["FORM", "DIV", "ARTICLE", "SECTION"];
     minSize = 5;
@@ -419,7 +518,7 @@ function processContentDoc(contentDoc, thisURL, saveOffline) {
     }
     
     console.log("Completed Replace parent loops");
-        
+
     // Format the tags in a nice readable font/style using custom css loaded in header
     let reformatTagList = ["UL", "OL", "LI", "DIV", "SPAN", "P", "FONT", "BODY", "H1", 
                            "H2", "H3", "PRE", "TABLE", "ARTICLE", "SECTION"];
@@ -428,11 +527,15 @@ function processContentDoc(contentDoc, thisURL, saveOffline) {
     }
 
     console.log("Completed reformatting tags");
-   
+
     // Time to add back the images that we have cloned
     //
-    addBackImages(contentDoc, imgCollection, indexMap);
+    addBackElems(contentDoc, "IMG", imgCollection, indexMap);
 
+    // Add back any title/h1 tags we backup that were removed incorrectly
+    addBackElems(contentDoc, "H1", hElemsMap, indexMap);
+
+    console.log("Reinserted images and H1 tags...");
 
     // Add the "Menu Items" to the top of the page
     let menu_div = createNode(contentDoc, {type: 'DIV', attr: { class:'tranquility_menu', id:'tranquility_menu', align:'center' } });
@@ -550,6 +653,21 @@ function processContentDoc(contentDoc, thisURL, saveOffline) {
         quick_tools_div.appendChild(saveaspdf_div);
     }
 
+    // Adding custom navigation buttons for page-up and page-down scrolling
+    //
+    let page_down_div = createNode(contentDoc, {type: 'DIV', attr: {class: 'tranquility_page_down_div', id: 'tranquility_page_down_div' } });
+    page_down_div.setAttribute('title', browser.i18n.getMessage("pageDown"));
+    page_down_div.textContent = '\u226b';
+    page_down_div.addEventListener("click", handlePageDownClickEvent, false);
+    contentDoc.body.insertBefore(page_down_div, contentDoc.body.firstChild);
+
+    let page_up_div = createNode(contentDoc, {type: 'DIV', attr: {class: 'tranquility_page_up_div', id: 'tranquility_page_up_div' } });
+    page_up_div.setAttribute('title', browser.i18n.getMessage("pageUp"));
+    page_up_div.textContent = '\u226a';
+    page_up_div.addEventListener("click", handlePageUpClickEvent, false);
+    contentDoc.body.insertBefore(page_up_div, contentDoc.body.firstChild);
+
+
     console.log("Added all custom buttons and menus");
     
     // Remove target attribute from all anchor elements
@@ -570,9 +688,22 @@ function processContentDoc(contentDoc, thisURL, saveOffline) {
     applyAllTranquilityPreferences();
     addBackEventListeners();
 
+    // Try one last time to remove any hidden/script elements that did not get removed for any reason
+    for (let i = 0; i < scriptTags.length; i++) {
+        removeTag(contentDoc, scriptTags[i]);
+    }
+    for (let i = 0; i < likeHidden.length; i++) {
+        removeTag(contentDoc, likeHidden[i]);
+    }
+
     if (saveOffline) {
         saveContentOffline(thisURL, document.cloneNode(true));
     }
+
+    // Scroll to the top of the page (this is required if tranquility is invoked when
+    // the user has scrolled down the page and then invokes tranquility reader
+    //
+    window.scroll(0, 0);
     
 }
 
@@ -602,27 +733,19 @@ function removeWhiteSpaceComments(cdoc) {
 
 function removeTag(cdoc, tagString) {
 
-    let c = cdoc.getElementsByTagName(tagString);
-    let len = c.length;
-    let tElem;
-    for(let dt=0; dt < len; dt++) {
-        tElem = c[len-dt-1];
-        // Do not delete iframes with links to youtube videos
-        if((tagString == "IFRAME") && (tElem.src.search(/youtube/) != -1)) {
-            continue;
+    console.log("Removing items with tag: ", tagString);
+    let regexp = new RegExp(tagString, 'i');
+    console.log(cdoc.body.getElementsByTagName(tagString).length);
+    let nodeIter = getNodeIterator(cdoc.body, regexp, "nodeName");
+    let node = null;
+    let ncounter = 0;
+    while ((node = nodeIter.nextNode())) {
+        ncounter += 1;
+        if(node.id == undefined || node.id.substr(0,11) !== "tranquility") {
+            node.parentNode.removeChild(node);
         }
-        
-        // Do not delete this element if it is either a H1 tag 
-        //(or contains child elements which are H1)
-        let h1elems = tElem.getElementsByTagName("H1");
-        if(tElem.nodeName == "H1" || h1elems.length > 0) 
-            continue;
-
-        if(tElem.id == undefined || tElem.id.substr(0,11) !== "tranquility") {
-            tElem.parentNode.removeChild(tElem);
-        }
-
     }
+    console.log("Removed ", ncounter, " items with tag: ", tagString);
 }
 
 function reformatHeader(cdoc) {
@@ -674,12 +797,6 @@ function pruneAdsTag(cdoc, url, tagString, thresholdPctg, totalSize, imgCollecti
     for(let i=0; i < len; i++) {
         tElem = c[len-i-1];
 
-        // If the DIV has a H1 child, then we want to retain the article
-        // heading and not delete it.
-        let h1elems = tElem.getElementsByTagName("H1");
-        if(h1elems.length > 0) 
-            continue;
-
         let cLength = computeSize(tElem);
         let pctg = cLength/totalSize; 
         // If the DIV/SECTION/ARTICLE is empty remove it right away
@@ -715,8 +832,9 @@ function pruneAdsTag(cdoc, url, tagString, thresholdPctg, totalSize, imgCollecti
                 let images = tElem.getElementsByTagName('img');
                 if (images.length > 0) {
                     for (let k = 0; k < images.length; k++) {
-                        if (images[k].src in imgCollection) {
-                            delete imgCollection[images[k].src];
+                        let idx = images[k].getAttribute('data-dfsIndex');
+                        if (idx in imgCollection) {
+                            delete imgCollection[idx];
                         }
                     }
                 }
@@ -1149,9 +1267,12 @@ function getProgressBar(cdoc) {
 
 function indexElements(indexMap, node) {
 
+    if (node == null) return;
+
     indexMap[dfsIndex] = node;
     if (node.nodeType == 1) {
         node.setAttribute('data-dfsIndex', dfsIndex);
+        node.setAttribute('data-origClassName', node.className);
     }
     dfsIndex += 1;
     let children = node.childNodes;
@@ -1166,74 +1287,83 @@ function cloneImages(cdoc, collection) {
     // in data fields
     let images = cdoc.getElementsByTagName('IMG');
     for (let i = 0; i < images.length; i++) {
+        console.log(images[i].src.substr(0,4));
+        if (images[i].src.substr(0,4) == "data") {
+            continue;
+        }
         let img = new Image();
+        let idx = images[i].getAttribute('data-dfsIndex');
         img.src = images[i].src;
-        img.setAttribute('data-dfsIndex', images[i].getAttribute('data-dfsIndex'));
+        img.setAttribute('data-dfsIndex', idx);
         img.alt = images[i].alt;
 
-        collection[images[i].src] = img;
+        collection[idx] = img;
         console.log(images[i].src + ": " + images[i].alt);
     }
 }
 
-function addBackImages(cdoc, imgs, indexMap) {
+function addBackElems(cdoc, tagName, bkpElems, indexMap) {
 
-    let images = cdoc.body.getElementsByTagName('IMG');
-    let imgMap = {};
-    for (let i = 0; i < images.length; i++) {
-        imgMap[images[i].src] = i;
+    let elems = cdoc.body.getElementsByTagName(tagName);
+    let elemMap = {};
+    for (let i = 0; i < elems.length; i++) {
+        let idx = elems[i].getAttribute('data-dfsIndex');
+        elemMap[idx] = i;
+        //console.log(idx, elems[i]);
     }
 
-    let children = cdoc.body.getElementsByTagName('*');
+    for (let key in bkpElems) {
 
-    for (let key in imgs) {
+        let elem = bkpElems[key];
 
-        let img = imgs[key];
-
-        // Skip adding back image if the current cleanup has already
-        // retained the original image
+        // Skip adding back element if the current cleanup has already
+        // retained the original element
         //
-        if (key in imgMap) {
+        //console.log(elem.getAttribute('data-dfsIndex'), elem);
+        if (key in elemMap) {
+            //console.log("Found duplicate key...: ", key);
             continue;
         }
 
-        console.log(key + ": " + imgs[key].alt);
-        // Should we include images without alt text?  Maybe these
-        // are not important and/or are advertisment/unrelated images?
-        //
-        //if (img.alt.length == 0) {
-        //    continue;
-        //}
-
-        let nextSibling = null;
-        let prevSibling = null;
-        let prevSiblingIdx = -1;
-        let imgIdx = parseInt(img.getAttribute('data-dfsIndex'));
-        console.log(imgIdx);
-        for (let i = 0; i < children.length; i++) {
-            if (children[i].nodeType == 1) {
-                let idx = parseInt(children[i].getAttribute('data-dfsIndex'));
-                if (idx < imgIdx && idx > prevSiblingIdx) {
-                    prevSibling = children[i];
-                    prevSiblingIdx = idx;
-                }
-                if (idx > imgIdx) {
-                    nextSibling = children[i];
-                    break;
-                }
-            }
-            else {
-            }
-        }
-
-        if (nextSibling != null) {
-            nextSibling.insertAdjacentElement('beforebegin', img);
-        }
-        else if (prevSibling != null) {
-            prevSibling.insertAdjacentElement('afterend', img);
-        }
+        insertByDFSIndex(elem, cdoc);
     }
 }
+
+function insertByDFSIndex(elem, cdoc) {
+
+    let children = cdoc.body.getElementsByTagName("*");
+
+    elem.className = 'tranquility';
+
+    let nextSibling = null;
+    let prevSibling = null;
+    let prevSiblingIdx = -1;
+    let elemIdx = parseInt(elem.getAttribute('data-dfsIndex'));
+    console.log(elemIdx);
+    for (let i = 0; i < children.length; i++) {
+        if (children[i].nodeType == 1) {
+            let idx = parseInt(children[i].getAttribute('data-dfsIndex'));
+            if (idx < elemIdx && idx > prevSiblingIdx) {
+                prevSibling = children[i];
+                prevSiblingIdx = idx;
+            }
+            if (idx > elemIdx) {
+                nextSibling = children[i];
+                break;
+            }
+        }
+        else {
+        }
+    }
+
+    if (nextSibling != null) {
+        nextSibling.insertAdjacentElement('beforebegin', elem);
+    }
+    else if (prevSibling != null) {
+        prevSibling.insertAdjacentElement('afterend', elem);
+    }
+}
+
 
 // Remove a node recursively based on the text-content of its parent
 //
@@ -1255,7 +1385,8 @@ function deleteZeroSizeImages(cdoc) {
     let images = cdoc.getElementsByTagName('IMG');
     for (let i = images.length-1; i >= 0; i--) {
         if (parseInt(images[i].getAttribute('height')) == 0 ||
-            parseInt(images[i].getAttribute('width')) == 0) {
+            parseInt(images[i].getAttribute('width')) == 0 ||
+            images[i].src.substr(0,4) == "data") {
             images[i].parentNode.removeChild(images[i]);
         }
     }
@@ -1272,9 +1403,41 @@ function requestOSVersion() {
     }
 }
 
+
 function updateOSVersion(version) {
     console.log("Updating osVersion to: " + version);
     osVersion = version;
+}
+
+
+function cloneHElems(hdict, cdoc) {
+
+    let hs = cdoc.getElementsByTagName("H1");
+    for (let i = 0; i < hs.length; i++) {
+        let elem = hs[i];
+        let idx = elem.getAttribute('data-dfsIndex');
+        hdict[idx] = elem.cloneNode(true);
+    }
+}
+
+
+function getNodeIterator(root, regexp, attr) {
+
+    return document.createNodeIterator(
+        root,
+
+        NodeFilter.SHOW_ALL,
+
+        { acceptNode: function(node) {
+            let nodeAttr = node.className;
+            if (attr == "nodeName") {
+                nodeAttr = node.nodeName;
+            }
+            if (regexp.test(nodeAttr)) {
+                return NodeFilter.FILTER_ACCEPT;
+            }
+        }}
+    );
 }
 
 /*

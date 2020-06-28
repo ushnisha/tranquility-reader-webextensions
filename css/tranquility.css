@@ -472,6 +472,34 @@ div.tranquility_progress_bar
   border-radius: 5px; 
 }
 
+div.tranquility_page_up_div
+{
+  font-family: Univers,Scala,Georgia,Verdana,Times,Helvetica;
+  font-size: 20px;
+  z-index: 9999980;
+  text-align: right;
+  padding-top: 20px;
+  position: fixed;
+  top: 50%;
+  left: 20px;
+  width: 40px;
+  cursor: pointer;
+}
+
+div.tranquility_page_down_div
+{
+  font-family: Univers,Scala,Georgia,Verdana,Times,Helvetica;
+  font-size: 20px;
+  z-index: 9999980;
+  text-align: right;
+  padding-top: 20px;
+  position: fixed;
+  top: 50%;
+  right: 0%;
+  width: 40px;
+  cursor: pointer;
+}
+
 /* media overrides for smaller screens
    added as part of supporting AndroidOS
 */
@@ -496,9 +524,25 @@ div.tranquility_progress_bar
    }
    div.tranquility_expand_menu_btn {
      font-size: 15px;
+     right: 2%;
+     width: 20px;
    }
    span.tranquility_annotation {
      font-size: 15px;
+   }
+   div.tranquility_page_up_div {
+     font-size: 15px;
+     left: 2%;
+     width: 20px;
+   }
+   div.tranquility_page_down_div {
+     font-size: 15px;
+     width: 20px;
+   }
+   div.tranquility_quick_tools_div {
+     font-size: 15px;
+     right: 2%;
+     width: 20px;
    }
 }
 
@@ -526,33 +570,13 @@ div.tranquility_progress_bar
 
   .tranquility_progress_bar,
   .tranquility_quick_tools_div,
+  .tranquility_page_up_div,
+  .tranquility_page_down_div,
   .tranquility_expand_menu_btn  {
-      visibility: hidden !important;
+      display: none !important;
   }
 
   div:not([class^="tranquility"]) {
-      visibility: hidden !important;
-  }
-}
-
-@media all {
-  div[class*='social'],
-  div[class*='soc'],
-  div[class*='sharing'],
-  div[class^='header'],
-  div[class*='footer'],
-  div[class^='sidebar'],
-  div[class*='navigation'],
-  div[class*='video'],
-  div[class*='advertising'],
-  div[class*='-ad-'],
-  aside[class*='social'],
-  header,
-  footer,
-  svg,
-  path,
-  line
-  {
-    visibility: hidden !important;
+      display: none !important;
   }
 }

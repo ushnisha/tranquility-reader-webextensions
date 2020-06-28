@@ -186,6 +186,16 @@
     "description" : "Button to save the processed page to a PDF file"
   },
 
+  "pageDown" : {
+    "message"     : "Scroll Down One Page",
+    "description" : "Button to scroll down one page"
+  },
+
+  "pageUp" : {
+    "message"     : "Scroll Up One Page",
+    "description" : "Button to scroll up one page"
+  },
+
   "readLaterNotSupportedString" : {
     "message"     : "'Read Later' functionality is not supported in Private Browsing Mode",
     "description" : "IndexedDB is not available in the Private browsing mode"
