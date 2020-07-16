@@ -1,3 +1,19 @@
+## Version 3.0.20:
+
+* Update PRIVACY.md to reflect removal of "tabs" permission
+
+* Handle corner case where pages with content in the "main" tag
+  have content flowing outside the reading width
+
+* Fix bug where the page up/down scroll buttons do not work
+  in offline/saved pages
+
+* Refine regexp to remove additional ad related elements
+
+* Ignore CDATA nodes when measuring amount of text in an element
+
+--------------------------------
+
 ## Version 3.0.19:
 
 * Adding missing heading/title if it has been removed during processing

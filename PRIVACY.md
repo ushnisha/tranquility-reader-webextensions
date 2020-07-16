@@ -28,8 +28,6 @@ This permission request  may raise a warning message that the extension can read
 
 * "activeTab": Modify data on the current tab (required when running the extension to modify the web page and make it readable).
 
-* "tabs":  Access all tabs in the browser.  When you change a preference (font name, font color, reading width, etc. all tabs on which you have already run Tranquility Reader are automatically updated with these new preferences.
-
 * "storage": Store user preferences and offline pages locally on your browser.
 
 * "alarms": A way of giving visual clues (with built in time delays) to the user when preferences have been updated successfully (or if there are errors).

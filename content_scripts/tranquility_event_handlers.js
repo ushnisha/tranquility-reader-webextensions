@@ -374,8 +374,9 @@ function addBackEventListeners() {
         "tranquility_offline_link"          : handleLoadOfflineLinkClickEvent,
         "tranquility_expand_menu_btn"       : handleExpandMenuButtonClickEvent,
         "tranquility_saveaspdf_div"         : handleSaveAsPDFClickEvent,
-        "tranquility_prefs_link_div"        : handleShowPreferencesClickEvent
-
+        "tranquility_prefs_link_div"        : handleShowPreferencesClickEvent,
+        "tranquility_page_down_div"         : handlePageDownClickEvent,
+        "tranquility_page_up_div"           : handlePageUpClickEvent
     };
 
     // Add back click event listener to each of the eventElements

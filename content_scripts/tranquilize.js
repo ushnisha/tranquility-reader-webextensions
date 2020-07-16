@@ -288,6 +288,11 @@ function processContentDoc(contentDoc, thisURL, saveOffline) {
         removeTag(contentDoc, likeHidden[i]);
     }
 
+    // Remove unnecessary whitespaces and comments
+    removeWhiteSpaceComments(contentDoc);
+    //console.log("Removed white spaces and comments");
+
+    // Cleanup the head and unnecessary tags
     // Delete All Hidden Elements before doing anything further
     // These could be hidden images, div, spans, spacers, etc...
     // Delete any content that has display = 'none' or visibility == 'hidden'
@@ -403,9 +408,8 @@ function processContentDoc(contentDoc, thisURL, saveOffline) {
     }
 
     // Remove unnecessary whitespaces and comments
-    removeWhiteSpaceComments(contentDoc);
-
-    console.log("Removed white spaces and comments");
+    //removeWhiteSpaceComments(contentDoc);
+    //console.log("Removed white spaces and comments");
 
     // Cleanup the head and unnecessary tags
     let delTags = ["STYLE", "LINK", "META", "SCRIPT", "NOSCRIPT", "IFRAME",
@@ -431,7 +435,7 @@ function processContentDoc(contentDoc, thisURL, saveOffline) {
     // since it is easier to undo the cleanup in javascript or add logic to skip
     // certain elements that seem to have actual content in them
     //
-    let unlikelyCandidates = /^social|soc|^header|footer|related|recommended|sponsored|action|navigation|promo|adCaption|comment|dfp|adHolder|billboard|slide|-ad-|disqus|more-stories/i
+    let unlikelyCandidates = /^social|soc|^header|footer|related|recommended|sponsored|action|navigation|promo|adCaption|comment|dfp|adHolder|billboard|slide|-ad-|_ad_|control-bar|disqus|more-stories/i
     let nodeIter = getNodeIterator(contentDoc.body, unlikelyCandidates, "className");
     let node = null;
     while ((node = nodeIter.nextNode())) {
@@ -521,7 +525,7 @@ function processContentDoc(contentDoc, thisURL, saveOffline) {
 
     // Format the tags in a nice readable font/style using custom css loaded in header
     let reformatTagList = ["UL", "OL", "LI", "DIV", "SPAN", "P", "FONT", "BODY", "H1", 
-                           "H2", "H3", "PRE", "TABLE", "ARTICLE", "SECTION"];
+                           "H2", "H3", "PRE", "TABLE", "ARTICLE", "SECTION", "MAIN"];
     for(let r=0; r < reformatTagList.length; r++) {
         reformatTag(contentDoc, reformatTagList[r]);
     }
@@ -725,7 +729,7 @@ function removeWhiteSpaceComments(cdoc) {
             let allText = cnodes[i].data;
             cnodes[i].data = allText.replace(/\s{2,}/g, ' ');
         }
-        if(cnodes[i].nodeType == 8) {
+        if(cnodes[i].nodeType == 8 || cnodes[i].nodeType == 4) {
             cnodes[i].parentNode.removeChild(cnodes[i]);
         }
     }
@@ -1419,7 +1423,6 @@ function cloneHElems(hdict, cdoc) {
         hdict[idx] = elem.cloneNode(true);
     }
 }
-
 
 function getNodeIterator(root, regexp, attr) {
 
