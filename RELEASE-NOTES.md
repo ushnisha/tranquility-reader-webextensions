@@ -1,3 +1,18 @@
+## Version 3.0.21:
+
+* Preserve the original zoom setting (scale the font size instead)
+
+* Clone the document instead of the body (attempt to remove more
+  event listeners)
+
+* Auto-hide the UI controls (toggle display on clicking on the 
+  body of the page)
+
+* Reorganize code to separate out UI related functionality 
+  into a separate file
+
+--------------------------------
+
 ## Version 3.0.20:
 
 * Update PRIVACY.md to reflect removal of "tabs" permission
