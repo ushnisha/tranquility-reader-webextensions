@@ -353,6 +353,25 @@ function handleClickEvent(event) {
         let note = document.getElementById('tranquility_view_notes');
         note.parentNode.removeChild(note);
     }
+    else {
+        toggle_ui_controls_visibility();
+    }
+}
+
+function toggle_ui_controls_visibility() {
+
+    let targetted_controls = ["tranquility_quick_tools_div", "tranquility_page_down_div", "tranquility_page_up_div"];
+    for (let i = 0; i < targetted_controls.length; i++) {
+        let elem = document.getElementById(targetted_controls[i]);
+        let hideInTime = 10000;
+        if (elem.style.visibility == 'hidden') {
+            elem.style.visibility = 'visible';
+            setTimeout(function() {elem.style.visibility = 'hidden';}, hideInTime);
+        }
+        else {
+            elem.style.visibility = 'hidden';
+        }
+    }
 }
 
 function addBackEventListeners() {

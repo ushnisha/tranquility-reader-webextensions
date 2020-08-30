@@ -79,6 +79,9 @@ let processMessage = function (message) {
     else if (message.action == "getOSVersion") {
         getOSVersion();
     }
+    else if (message.action == "getZoomValue") {
+        getZoom();
+    }
     else if (message.action == "saveAsPDF") {
         console.log("Saving page as PDF file");
         saveAsPDF();

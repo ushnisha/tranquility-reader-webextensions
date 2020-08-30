@@ -111,8 +111,9 @@ function insertContentScriptsAndCSSAndAction(tabId, action) {
     let p4 = browser.tabs.executeScript(tabId, { matchAboutBlank: true, file: "/content_scripts/tranquility_annotations.js", runAt: "document_end"});
     let p5 = browser.tabs.executeScript(tabId, { matchAboutBlank: true, file: "/content_scripts/tranquility_offline_content.js", runAt: "document_end"});
     let p6 = browser.tabs.executeScript(tabId, { matchAboutBlank: true, file: "/content_scripts/tranquility_event_handlers.js", runAt: "document_end"});
+    let p7 = browser.tabs.executeScript(tabId, { matchAboutBlank: true, file: "/content_scripts/tranquility_ui_elems.js", runAt: "document_end"});
 
-    Promise.all([p1, p2, p3, p4, p5, p6]).then(
+    Promise.all([p1, p2, p3, p4, p5, p6, p7]).then(
         function () { 
             if (action == "PopulateOfflinePages") {
                 db_getOfflinePagesList();
@@ -122,20 +123,6 @@ function insertContentScriptsAndCSSAndAction(tabId, action) {
                 db_getAllOfflineContent();
             }
             else {
-                // Remove zoom since we want to use the Tranquility font sizes only
-                // Unfortunately, this will mean that page zoom settings are lost for
-                // future normal loads of the page.  I am unable to figure out a way to
-                // restore the original zoom in a straightforward manner given that
-                // we support a tranquil browsing mode.
-                // setZoom is not supported on AndroidOS
-                //
-
-                let gettingInfo = browser.runtime.getPlatformInfo(function (info) {
-                    if (info.os != "android") {
-                        setZoom(1);
-                    }
-                });
-
                 runAction(tabId, action);
             }
         }).catch(
@@ -262,17 +249,6 @@ function loadLinkAndRunTranquility(thisURL, mode) {
 
 }
 
-function setZoom(zoom) {
-    
-    let onSetZoom = function () {
-        if (browser.runtime.lastError) {
-            console.log(browser.runtime.lastError);
-        }
-    }
-
-    let setting = browser.tabs.setZoom(zoom, onSetZoom);
-}
-
 function getIconFile(iconname) {
     let iconfile = "tranquility-32.png";
     if (iconname == "default") {
@@ -395,6 +371,24 @@ function getOSVersion() {
     }
 
     let getting = browser.runtime.getPlatformInfo(onGetting);
+}
+
+
+function getZoom() {
+
+    let onGetting = function(zoom) {
+        browser.tabs.query({active: true, currentWindow: true}, function(tabs) {
+            browser.tabs.sendMessage(tabs[0].id, {"tranquility_action": "UpdateZoomValue",
+                                                  "zoomValue": zoom});
+        });
+    }
+
+    let onError = function(error) {
+        console.log(error);
+    }
+
+    let getting = browser.tabs.getZoom();
+    getting.then(onGetting, onError);
 }
 
 function saveAsPDF() {

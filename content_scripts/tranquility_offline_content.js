@@ -170,6 +170,8 @@ function displayDocFromDB(cached_doc, thisURL) {
 
     addBackEventListeners();
     hideMenuDiv(document);
+    toggle_ui_controls_visibility();
+    window.scroll(0, 0);
 }
 
 
