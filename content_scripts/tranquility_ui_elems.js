@@ -168,8 +168,6 @@ function create_ui_elements(contentDoc, supporting_links, thisURL) {
     original_url_div.textContent = "Source : " + thisURL;
     cdiv_inner.insertBefore(original_url_div, cdiv_inner.firstChild);
 
-    window.scroll(0,0);
-
     toggle_ui_controls_visibility();
 
 }
@@ -187,11 +185,12 @@ function toggleMenuDisplay(cdoc) {
 
 function showMenuDiv(cdoc) {
     let menu_div = cdoc.getElementById('tranquility_menu');
-    menu_div.style.height = '50px';
+    menu_div.style.height = currentFontSize * 3 + 'px';
     menu_div.style.opacity = 1;
     let menu_items = menu_div.childNodes;
     for(let i=0; i < menu_items.length; i++) {
         menu_items[i].style.visibility = 'visible';
+        menu_items[i].style.height = Math.round(currentFontSize * 1.4) + 'px';
     };
 
     // Delete the expand menu button and trigger a hide of the menu 

@@ -36,6 +36,7 @@ var currentURL = null;
 var dfsIndex = 1;
 var osVersion = null;
 var zoomValue = 1.0;
+var currentFontSize = "20px";
 
 function tranquilize(request, sender, sendResponse) {
 
@@ -230,7 +231,7 @@ function processXMLHTTPRequest(url, saveOffline) {
             }
         }        
     };
-    console.log(url);
+    console.log(getURL);
     oXHR.open("GET", getURL, true);
 
     // Fix to handle pages that use iso-8859-1/windows-1252 encoding
@@ -252,6 +253,12 @@ function processResponse (oXHRDoc, thisURL, saveOffline) {
 }
 
 function processContentDoc(contentDoc, thisURL, saveOffline) {
+
+    // First move to the top of the document; for some reason
+    // window.scroll(0, 0) at the end of processing does not seem to
+    // always work
+    //
+    document.documentElement.scrollTop = 0;
 
     // Remove all event handlers by "deep" cloning the document
     // instead of cloning each element (saves some time and
@@ -288,6 +295,10 @@ function processContentDoc(contentDoc, thisURL, saveOffline) {
     //
     let hElemsMap = {};
     cloneHElems(hElemsMap, contentDoc);
+
+    // Collect any supporting links before processing the webpage
+    let supporting_links = getSupportingLinks(contentDoc);
+    console.log("Got supporting links...");
 
     // Remove some elements that are typically like hidden elements
     // but can add to the text size of a document; remove them so that
@@ -381,11 +392,6 @@ function processContentDoc(contentDoc, thisURL, saveOffline) {
         }
     }
 
-    // Collect any supporting links before processing the webpage
-    let supporting_links = getSupportingLinks(contentDoc);
-    
-    console.log("Got supporting links...");
-
     // If there is a single "MAIN" tag, then replace the entire document content with just the
     // contents of the main tag.  Trust that the content creator has done the correct thing.
     // If and article tag exists, then...
@@ -453,7 +459,7 @@ function processContentDoc(contentDoc, thisURL, saveOffline) {
     // since it is easier to undo the cleanup in javascript or add logic to skip
     // certain elements that seem to have actual content in them
     //
-    let unlikelyCandidates = /^social|soc|^header|footer|related|recommended|sponsored|action|navigation|promo|adCaption|comment|dfp|adHolder|billboard|slide|-ad-|_ad_|control-bar|disqus|more-stories/i
+    let unlikelyCandidates = /^social|soc|^header|footer|related|recommended|sponsored|action|navigation|promo|adCaption|comment|dfp|adHolder|billboard|slide|-ad-|_ad_|control-bar|menu|disqus|popup|pop-up|crumb|more-stories/i
     let nodeIter = getNodeIterator(contentDoc.body, unlikelyCandidates, "className");
     let node = null;
     while ((node = nodeIter.nextNode())) {
@@ -590,12 +596,6 @@ function processContentDoc(contentDoc, thisURL, saveOffline) {
     if (saveOffline) {
         saveContentOffline(thisURL, document.cloneNode(true));
     }
-
-    // Scroll to the top of the page (this is required if tranquility is invoked when
-    // the user has scrolled down the page and then invokes tranquility reader
-    //
-    window.scroll(0, 0);
-    
 }
 
 function removeWhiteSpaceComments(cdoc) {

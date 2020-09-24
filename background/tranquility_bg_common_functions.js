@@ -412,6 +412,24 @@ function saveAsPDF() {
                     paperheight = 11.69;
                 }
 
+                // Logic to include header/footer information
+                let head_left = '&T';
+                let head_right = '&U';
+                let foot_left = '&PT';
+                let foot_right = '&D';
+
+                if (result.tranquility_pdf_incl_head_foot == "Neither" ||
+                    result.tranquility_pdf_incl_head_foot == "OnlyFooter") {
+                    head_left = '';
+                    head_right = '';
+                }
+
+                if (result.tranquility_pdf_incl_head_foot == "Neither" ||
+                    result.tranquility_pdf_incl_head_foot == "OnlyHeader") {
+                    foot_left = '';
+                    foot_right = '';
+                }
+
                 let onSaving = function(tab) {
                     if (browser.runtime.lastError) {
                         console.log(browser.runtime.lastError);
@@ -420,11 +438,22 @@ function saveAsPDF() {
                         console.log("Saved active tab as PDF");
                     }
                 };
-                let saving = browser.tabs.saveAsPDF({'shrinkToFit': false, 'paperWidth': paperwidth,
-                                                     'paperHeight': paperheight}, onSaving);
+                let saving = browser.tabs.saveAsPDF({'shrinkToFit'  : false,
+                                                     'paperWidth'   : paperwidth,
+                                                     'paperHeight'  : paperheight,
+                                                     'headerLeft'   : head_left,
+                                                     'headerRight'  : head_right,
+                                                     'footerLeft'   : foot_left,
+                                                     'footerRight'  : foot_right,
+                                                     'marginTop'    : 1.0,
+                                                     'marginBottom' : 1.0,
+                                                     'marginLeft'   : 1.0,
+                                                     'marginRight'  : 1.0
+                                                    }, onSaving);
             }
         }
-        let getting = browser.storage.local.get("tranquility_pdf_paper_size", onGetting);
+        let getting = browser.storage.local.get(["tranquility_pdf_paper_size",
+                                                 "tranquility_pdf_incl_head_foot"], onGetting);
      });
 }
 

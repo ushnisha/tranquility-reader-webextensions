@@ -79,7 +79,10 @@ function applyFontPreferences() {
     let elems = document.documentElement.getElementsByTagName("*");
     let include_tags = ["tranquility", "tranquility_annotation_note", "tranquility_annotation_text", 
                         "tranquility_annotation_selection", "tranquility_annotation", 
-                        "tranquility_view_notes", "tranquility_offline_links"];
+                        "tranquility_view_notes", "tranquility_offline_links",
+                        "tranquility_nav_links", "tranquility_quick_links_div",
+                        "tranquility_pre", "tranquility_expand_menu_btn",
+                        "tranquility_menu", "tranquility_annotation"];
     
     let onGetting = function(result) {
         if (browser.runtime.lastError) {
@@ -90,6 +93,7 @@ function applyFontPreferences() {
 
             let adjustedFontSize = parseFloat(result.tranquility_font_size) / zoomValue;
             console.log(zoomValue, result.tranquility_font_size, adjustedFontSize);
+            currentFontSize = adjustedFontSize;
 
             for(let i=0; i < elems.length; i++) {
                 if(include_tags.indexOf(elems[i].getAttribute('class')) != -1) {

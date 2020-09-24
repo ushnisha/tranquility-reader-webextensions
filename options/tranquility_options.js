@@ -42,7 +42,8 @@ function saveOptions(e) {
         tranquility_reading_width:              document.getElementById("tranquility_reading_width").value,
         tranquility_line_height:                document.getElementById("tranquility_line_height").value,
         tranquility_text_align:                 document.getElementById("tranquility_text_align").value,
-        tranquility_pdf_paper_size:             document.getElementById("tranquility_pdf_paper_size").value
+        tranquility_pdf_paper_size:             document.getElementById("tranquility_pdf_paper_size").value,
+        tranquility_pdf_incl_head_foot:         document.getElementById("tranquility_pdf_incl_head_foot").value
     };
 
     // First save all of the current settings in the individual options
@@ -164,7 +165,8 @@ function restoreOptions() {
                       "tranquility_font_name", "tranquility_font_size", 
                       "tranquility_reading_width", "tranquility_line_height", 
                       "tranquility_text_align", "tranquility_browser_action_icon",
-                      "tranquility_pdf_paper_size"];
+                      "tranquility_pdf_paper_size", "tranquility_pdf_incl_head_foot"];
+
 
     // Set forms with values from storage.local (should exist since these were set during installation)
 
@@ -213,6 +215,9 @@ function restoreOptions() {
                     }
                     else if (opt_name == "tranquility_pdf_paper_size") {
                         document.getElementById(elem_name).value = result.tranquility_pdf_paper_size || "Letter";
+                    }
+                    else if (opt_name == "tranquility_pdf_incl_head_foot") {
+                        document.getElementById(elem_name).value = result.tranquility_pdf_incl_head_foot || "Both";
                     }
                 }
             }

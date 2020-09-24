@@ -158,7 +158,6 @@ function createAnnotationNote(note_p, read_width, ycoord) {
 function viewAnnotationNotes(read_width) {
 
     let view_notes_div = createNode(document, {type: 'DIV', attr: { class:'tranquility_view_notes', id:'tranquility_view_notes' } });
-    //view_notes_div.style.visibility = 'hidden';
     view_notes_div.addEventListener("click", handleAnnotationViewOrNoteClickEvent, false);
     document.body.appendChild(view_notes_div);
     

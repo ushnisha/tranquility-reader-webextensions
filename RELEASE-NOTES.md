@@ -1,3 +1,27 @@
+## Version 3.0.22:
+
+* Provide option to include/exclude header/footer when printing
+  the page as PDF document
+
+* Increase the margins of printed PDF to 1.0" (default 0.5")
+  At this time, margin is not user customizable
+
+* Remove font size hardcoding of certain custom elements and
+  make sure they also use the user specified font settings
+  (certain element dimensions are now scaled based on user
+   specified font size)
+
+* Attempt to fix issue with scrolling to top of page after
+  processing the page
+
+* Fix regression where some of the related/supporting links were
+  not showing up (for easy navigation in continuous browsing mode)
+  See github issue #27 for more details
+
+* Attempt to remove menu like elements on some pages
+
+--------------------------------
+
 ## Version 3.0.21:
 
 * Preserve the original zoom setting (scale the font size instead)
