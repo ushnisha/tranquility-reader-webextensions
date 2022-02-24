@@ -4,7 +4,7 @@
  * cluttered web pages
  **********************************************************************
 
-   Copyright (c) 2012-2020 Arun Kunchithapatham
+   Copyright (c) 2012-2021 Arun Kunchithapatham
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -34,7 +34,7 @@
 var browser = browser || chrome;
 var currentURL = null;
 var dfsIndex = 1;
-var osVersion = null;
+var osVersion = browser.runtime.PlatformOs;
 var zoomValue = 1.0;
 var currentFontSize = "20px";
 
@@ -89,13 +89,13 @@ function tranquilize(request, sender, sendResponse) {
     else if (request.tranquility_action == 'Status') {
         return Promise.resolve({response: "Tranquility Has Already Run"});
     }
-    else if (request.tranquility_action == 'UpdateOSVersion') {
-        updateOSVersion(request.osVersion);
-        return Promise.resolve({response: "Updated OS Version"});
-    }
     else if (request.tranquility_action == 'UpdateZoomValue') {
         updateZoomValue(request.zoomValue);
         return Promise.resolve({response: "Updated Zoom Value"});
+    }
+    else if (request.tranquility_action == 'ResetImageDisplay') {
+        applyImageDisplayPreferences();
+        return Promise.resolve({response: "Image Display Reset to Preference"});
     }
     else if (request.tranquility_action == 'None') {
         return Promise.resolve({response: "Receive Do Nothing Message"});
@@ -107,7 +107,6 @@ function tranquilize(request, sender, sendResponse) {
 
 function RunOnLoad() {
 
-    requestOSVersion();
     requestZoomValue();
 
     currentURL = location.toString();
@@ -134,14 +133,21 @@ function RunOnLoad() {
     // If tranquility has not been run, then "tranquilize" the document
     else {
         // Stop loading the document if it has not completed loading
-        if(document.readyState != "complete") {
+        if(document.readyState == "loading") {
             window.stop();
+            // Show a progress-bar to indicate activity and then process the request
+            // bar will automatically disappear since the document will be replaced
+            let pbar = getProgressBar(document);
+            pbar.style.visibility = 'visible';
+            processXMLHTTPRequest(currentURL, false);
         }
-        // Show a progress-bar to indicate activity and then process the request
-        // bar will automatically disappear since the document will be replaced
-        let pbar = getProgressBar(document);
-        pbar.style.visibility = 'visible';
-        processXMLHTTPRequest(currentURL, false);
+        else {
+            // Show a progress-bar to indicate activity and then process the request
+            // bar will automatically disappear since the document will be replaced
+            let pbar = getProgressBar(document);
+            pbar.style.visibility = 'visible';
+            processContentDoc(document, currentURL, false);
+        }
     }
 }
 
@@ -153,7 +159,7 @@ function RunOnSelection() {
     // prune the tranquilized content further and read just a portion of the article
 
     // Stop loading the document if it has not completed loading
-    if(document.readyState != "complete") {
+    if(document.readyState == "loading") {
         window.stop();
     }
 
@@ -188,7 +194,7 @@ function RunAndSaveOnLoad() {
     }
 
     // If tranquility has not been run, then "tranquilize" the document and then save the content offline
-    if(document.readyState != "complete") {
+    if(document.readyState == "loading") {
         window.stop();
     }
     // Show a progress-bar to indicate activity and then process the request
@@ -541,7 +547,6 @@ function processContentDoc(contentDoc, thisURL, saveOffline) {
     console.log("Completed second pass pruning");
     
     // Try to remove unnecessary nested DIV's
-    // They mess up the padding and margins; use only in moderate pruning
     // They mess up the padding and margins; use only in moderate pruning
     // if the threshold is < 0.99999
     for(let i=0; i < 5; i++) {
@@ -1090,7 +1095,6 @@ function cloneImages(cdoc, collection) {
     // in data fields
     let images = cdoc.getElementsByTagName('IMG');
     for (let i = 0; i < images.length; i++) {
-        console.log(images[i].src.substr(0,4));
         if (images[i].src.substr(0,4) == "data") {
             continue;
         }
@@ -1194,24 +1198,6 @@ function deleteZeroSizeImages(cdoc) {
         }
     }
 }
-
-// Send a message to the background script to return the OS Version
-//
-function requestOSVersion() {
-    if (osVersion == null) {
-        browser.runtime.sendMessage(
-        {
-         "action": "getOSVersion"
-        });
-    }
-}
-
-
-function updateOSVersion(version) {
-    console.log("Updating osVersion to: " + version);
-    osVersion = version;
-}
-
 
 function requestZoomValue() {
     browser.runtime.sendMessage(

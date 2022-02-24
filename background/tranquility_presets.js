@@ -4,7 +4,7 @@
  * cluttered web pages
  **********************************************************************
 
-   Copyright (c) 2012-2020 Arun Kunchithapatham
+   Copyright (c) 2012-2021 Arun Kunchithapatham
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -34,6 +34,7 @@ let tranquility_presets =
                "tranquility_annotation_highlight_color" : "#FFFF99",
                "tranquility_font_name"                  : "Georgia",
                "tranquility_font_size"                  : "22",
+               "tranquility_hide_images"                : "never",
                "tranquility_reading_width"              : "55",
                "tranquility_line_height"                : "140",
                "tranquility_text_align"                 : "left",
@@ -48,6 +49,7 @@ let tranquility_presets =
                "tranquility_annotation_highlight_color" : "#FFFF99",
                "tranquility_font_name"                  : "Georgia",
                "tranquility_font_size"                  : "15",
+               "tranquility_hide_images"                : "never",
                "tranquility_reading_width"              : "95",
                "tranquility_line_height"                : "140",
                "tranquility_text_align"                 : "left",
@@ -62,6 +64,7 @@ let tranquility_presets =
                "tranquility_annotation_highlight_color" : "#FFFF99",
                "tranquility_font_name"                  : "Georgia",
                "tranquility_font_size"                  : "22",
+               "tranquility_hide_images"                : "never",
                "tranquility_reading_width"              : "55",
                "tranquility_line_height"                : "140",
                "tranquility_text_align"                 : "left",
@@ -76,6 +79,7 @@ let tranquility_presets =
                "tranquility_annotation_highlight_color" : "#FFFF99",
                "tranquility_font_name"                  : "Georgia",
                "tranquility_font_size"                  : "22",
+               "tranquility_hide_images"                : "never",
                "tranquility_reading_width"              : "55",
                "tranquility_line_height"                : "140",
                "tranquility_text_align"                 : "left",
@@ -90,6 +94,7 @@ let tranquility_presets =
                "tranquility_annotation_highlight_color" : "#FFFF99",
                "tranquility_font_name"                  : "Courier",
                "tranquility_font_size"                  : "22",
+               "tranquility_hide_images"                : "never",
                "tranquility_reading_width"              : "55",
                "tranquility_line_height"                : "140",
                "tranquility_text_align"                 : "left",
@@ -104,6 +109,7 @@ let tranquility_presets =
                "tranquility_annotation_highlight_color" : "#FFFF99",
                "tranquility_font_name"                  : "Verdana",
                "tranquility_font_size"                  : "54",
+               "tranquility_hide_images"                : "never",
                "tranquility_reading_width"              : "75",
                "tranquility_line_height"                : "140",
                "tranquility_text_align"                 : "left",

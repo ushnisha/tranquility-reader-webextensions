@@ -80,7 +80,7 @@
   },
   
   "navigationString" : {
-    "message"     : "NEXT,NEXT>,PREV,<PREV,PREVIOUS,<PREVIOUS,NEXTPAGE,NEXTPAGE>,PREVIOUSPAGE,<PREVIOUSPAGE,FIRST,<<FIRST,LAST,LAST>>,<,<<,>,>>",
+    "message"     : "NEXT,NEXT>,PREV,<PREV,PREVIOUS,<PREVIOUS,NEXTPAGE,NEXTPAGE>,PREVIOUSPAGE,<PREVIOUSPAGE,NEXTCHAPTER,PREVIOUSCHAPTER,NEXTPOST,PREVIOUSPOST,PREVPOST,FIRST,<<FIRST,LAST,LAST>>,<,<<,>,>>",
     "description" : "List of Strings that indicate that we have a multi-page document with additional links"
   },
   

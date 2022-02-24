@@ -27,7 +27,7 @@ Tranquility Reader are critical for you.
 
 * Ability to customize default font, font-size, font color, 
   background color, and width of the reading area (you can use 
-  https://www.w3schools.com/colors/colors_picker.asp to pick a 
+  [this website](https://www.w3schools.com/colors/colors_picker.asp) to pick a
   suitable color code - thanks to user JA for feedback on this)
 
 * Create and manage your own preset configuration of the various 
@@ -56,11 +56,13 @@ Tranquility Reader are critical for you.
   option - "Tranquilize Selection".  Available from 3.0.7; 
   not supported on AndroidOS.)
 
+## User Guide:
+Refer to [this wiki page](https://github.com/ushnisha/tranquility-reader-webextensions/wiki) for a detailed tour of the Tranquility Reader extension, its various features and how to make the most of the extension.
 
 ## License & Copyright:
 
 Tranquility is provided under GPLv3 license.
-Copyright (C) 2012-2020 Arun Kunchithapatham
+Copyright (C) 2012-2021 Arun Kunchithapatham
 
 ## Privacy Policy:
 

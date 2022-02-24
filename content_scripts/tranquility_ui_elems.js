@@ -4,7 +4,7 @@
  * cluttered web pages
  **********************************************************************
 
-   Copyright (c) 2012-2020 Arun Kunchithapatham
+   Copyright (c) 2012-2021 Arun Kunchithapatham
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -136,10 +136,12 @@ function create_ui_elements(contentDoc, supporting_links, thisURL) {
 
     // Add a button to save page as PDF file
     //
+    console.log(osVersion);
     if (osVersion != null && osVersion != 'mac' && osVersion != 'android') {
+        console.log("Adding Save as PDF icon...");
         let saveaspdf_div = createNode(contentDoc, {type: 'DIV', attr: {class:'tranquility_saveaspdf_div', id:'tranquility_saveaspdf_div' } });
         saveaspdf_div.setAttribute('title', browser.i18n.getMessage("saveaspdf"));
-        let saveaspdf_img = createNode(contentDoc, {type: 'IMG', attr: {class:'tranquility_saveaspdf_img', id:'tranquility_saveaspdf_img', height: '40px', width:'40px', src: browser.extension.getURL("icons/tranquility_pdf.png")}});
+        let saveaspdf_img = createNode(contentDoc, {type: 'IMG', attr: {class:'tranquility_saveaspdf_img', id:'tranquility_saveaspdf_img', height: '40px', width:'40px', src: browser.runtime.getURL("icons/tranquility_pdf.png")}});
         saveaspdf_img.alt = browser.i18n.getMessage("saveaspdf");
         saveaspdf_div.appendChild(saveaspdf_img);
         saveaspdf_div.addEventListener("click", handleSaveAsPDFClickEvent, false);

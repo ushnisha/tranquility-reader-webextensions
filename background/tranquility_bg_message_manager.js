@@ -4,7 +4,7 @@
  * cluttered web pages
  **********************************************************************
 
-   Copyright (c) 2012-2020 Arun Kunchithapatham
+   Copyright (c) 2012-2021 Arun Kunchithapatham
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -75,9 +75,6 @@ let processMessage = function (message) {
         console.log("Changing browser action icon");
         console.log(message.iconname);
         changeBrowserActionIcon(message.iconname);
-    }
-    else if (message.action == "getOSVersion") {
-        getOSVersion();
     }
     else if (message.action == "getZoomValue") {
         getZoom();

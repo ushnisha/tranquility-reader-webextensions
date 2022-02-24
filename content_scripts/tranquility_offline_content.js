@@ -4,7 +4,7 @@
  * cluttered web pages
  **********************************************************************
 
-   Copyright (c) 2012-2020 Arun Kunchithapatham
+   Copyright (c) 2012-2021 Arun Kunchithapatham
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -102,7 +102,7 @@ function appendOfflinePageDetails(offline_data) {
         let p_elem = createNode(document, {type: 'P', attr: { class:'tranquility_offline_link', id:key } });
         let del_img = createNode(document, {type: 'IMG', attr: { class:'tranquility_delete_offline_link_img', href:key,
                                                                  height: '20px', width: '20px', 
-                                                                 src: browser.extension.getURL("icons/delete_icon.png") } });
+                                                                 src: browser.runtime.getURL("icons/delete_icon.png") } });
         let del_a_elem = createNode(document, {type: 'A', attr: { class:'tranquility_delete_offline_link', href:key } });
         del_a_elem.appendChild(del_img);
         del_a_elem.addEventListener("click", handleDeleteOfflineLinkClickEvent, false);

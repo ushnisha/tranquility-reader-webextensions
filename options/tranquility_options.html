@@ -4,7 +4,7 @@
  * cluttered web pages
  **********************************************************************
 
-   Copyright (c) 2012-2020 Arun Kunchithapatham
+   Copyright (c) 2012-2021 Arun Kunchithapatham
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -97,8 +97,16 @@
             </div> 
         </div>
 
-        <h2>Text Display Preferences:</h2>
+        <h2>Text and Image Display Preferences:</h2>
         <div class="tranquility_options_section">
+            <div class="tranquility_options_row">
+                <label for="tranquility_hide_images">Hide Images:</label>
+                <select id="tranquility_hide_images" class="icon">
+                    <option value="never">never</option>
+                    <option value="always">always</option>
+                    <option value="hide_only_for_print">hide_only_for_print</option>
+                </select>
+            </div>
             <div class="tranquility_options_row"> 
                 <label for="tranquility_reading_width">Reading Width:</label>
                 <input type="text" id="tranquility_reading_width"/> 

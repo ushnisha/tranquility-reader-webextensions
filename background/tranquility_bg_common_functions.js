@@ -4,7 +4,7 @@
  * cluttered web pages
  **********************************************************************
 
-   Copyright (c) 2012-2020 Arun Kunchithapatham
+   Copyright (c) 2012-2021 Arun Kunchithapatham
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -96,7 +96,7 @@ function runAction(tabId, action) {
             console.log("Response From Content Script: " + response.response);
         }
     }
-    
+
     let sendMessage = browser.tabs.sendMessage(tabId, {tranquility_action: action}, onSendMessage);
 }
 
@@ -300,6 +300,7 @@ function handleInstalled(details) {
         // to allow users to add their own custom presets
         initializeOption("tranquility_presets", 
 		         JSON.stringify(tranquility_presets));
+
     });
   
 }
@@ -352,27 +353,6 @@ function setBrowserActionIcon() {
 
     let getting = browser.storage.local.get("tranquility_browser_action_icon", onGettingSuccess);
 }
-
-
-function getOSVersion() {
-
-    let onGetting = function(result) {
-        if (browser.runtime.lastError) {
-            console.log(browser.runtime.lastError);
-        }
-        else {
-            if (result.os != null) {
-                browser.tabs.query({active: true, currentWindow: true}, function(tabs) {
-                    browser.tabs.sendMessage(tabs[0].id, {"tranquility_action": "UpdateOSVersion",
-                                                          "osVersion": result.os});
-                });
-            }
-        }
-    }
-
-    let getting = browser.runtime.getPlatformInfo(onGetting);
-}
-
 
 function getZoom() {
 
@@ -436,6 +416,7 @@ function saveAsPDF() {
                     }
                     else {
                         console.log("Saved active tab as PDF");
+                        browser.tabs.sendMessage(active_tab.id, {tranquility_action: "ResetImageDisplay"});
                     }
                 };
                 let saving = browser.tabs.saveAsPDF({'shrinkToFit'  : false,
@@ -474,7 +455,7 @@ function openOptionsPage() {
 
 
 function handleStartup() {
-  setBrowserActionIcon();
+    setBrowserActionIcon();
 }
 
 browser.browserAction.onClicked.addListener(browserAction);

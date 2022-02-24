@@ -4,7 +4,7 @@
  * cluttered web pages
  **********************************************************************
 
-   Copyright (c) 2012-2020 Arun Kunchithapatham
+   Copyright (c) 2012-2021 Arun Kunchithapatham
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -39,10 +39,11 @@ function applyAllTranquilityPreferences() {
     applyReadingWidthPreferences();
     applyTextJustificationPreferences();
     applyLineHeightPreferences();
+    applyImageDisplayPreferences();
 }
 
 function applyTranquilityCSS() {
-    let hlink = createNode(document, {type: 'LINK', attr: { href:browser.extension.getURL("css/tranquility.css"), rel:'stylesheet', type:'text/css' } });
+    let hlink = createNode(document, {type: 'LINK', attr: { href:browser.runtime.getURL("css/tranquility.css"), rel:'stylesheet', type:'text/css' } });
     let heads = document.getElementsByTagName('HEAD');
     for(let i=0; i < heads.length; i++) {
         heads[i].appendChild(hlink);
@@ -264,6 +265,41 @@ function resizeLoadedImage(image, max_width) {
         image.width = max_width;
         image.height = max_width*aspect_ratio;
     }  
+}
+
+function applyImageDisplayPreferences() {
+
+    // Update the display of images based on the preference setting
+    let onGetting = function(result) {
+        if (browser.runtime.lastError) {
+            console.log(browser.runtime.lastError);
+        }
+        else {
+            console.log("Applying Image Display Preferences");
+            if (result.tranquility_hide_images == 'never' ||
+                result.tranquility_hide_images == 'hide_only_for_print') {
+                setImageDisplay(document, 'inline');
+            }
+            else if (result.tranquility_hide_images == 'always') {
+                setImageDisplay(document, 'none');
+            }
+        }
+    };
+
+    let getting = browser.storage.local.get("tranquility_hide_images", onGetting);
+}
+
+function setImageDisplay(document, displayVal) {
+    //let images = document.getElementsByTagName("IMG");
+    let images = document.querySelectorAll("IMG, FIGURE, FIGCAPTION, PICTURE, SVG");
+    console.log("Setting display of images... to " + displayVal);
+    for(let im=0; im < images.length; im++)  {
+        if (images[im].id == "tranquility_saveaspdf_img") {
+            continue;
+        }
+        console.log(images[im]);
+        images[im].style.display = displayVal;
+    }
 }
 
 window.addEventListener("resize", applyAllTranquilityPreferences);

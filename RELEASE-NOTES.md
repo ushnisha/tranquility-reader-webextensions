@@ -1,3 +1,18 @@
+## Version 3.0.23:
+
+* Provide option to hide images when transforming/printing a document.
+  - "never": never hide images/always display images when possible
+  - "always": always hide images
+  - "hide_only_for_print": show images when possible, but hide when printing
+
+* Modification to pattern match to display more links to previous/next articles
+
+* Minor code simplification/cleanup
+
+* Updated copyright information
+
+--------------------------------
+
 ## Version 3.0.22:
 
 * Provide option to include/exclude header/footer when printing
