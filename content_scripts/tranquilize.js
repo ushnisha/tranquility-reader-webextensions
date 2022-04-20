@@ -4,7 +4,7 @@
  * cluttered web pages
  **********************************************************************
 
-   Copyright (c) 2012-2021 Arun Kunchithapatham
+   Copyright (c) 2012-2022 Arun Kunchithapatham
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -93,9 +93,14 @@ function tranquilize(request, sender, sendResponse) {
         updateZoomValue(request.zoomValue);
         return Promise.resolve({response: "Updated Zoom Value"});
     }
-    else if (request.tranquility_action == 'ResetImageDisplay') {
+    else if (request.tranquility_action == 'ExecutePostPDFPrintActions') {
+
+        // Reset page to default column-num value post printing
+        // Then reapply the image display preferences
+        applyNumColumnsPreferences('defaultMode');
         applyImageDisplayPreferences();
-        return Promise.resolve({response: "Image Display Reset to Preference"});
+
+        return Promise.resolve({response: "Executed Post PDF Print Actions"});
     }
     else if (request.tranquility_action == 'None') {
         return Promise.resolve({response: "Receive Do Nothing Message"});

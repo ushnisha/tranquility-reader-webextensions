@@ -4,7 +4,7 @@
  * cluttered web pages
  **********************************************************************
 
-   Copyright (c) 2012-2021 Arun Kunchithapatham
+   Copyright (c) 2012-2022 Arun Kunchithapatham
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -416,7 +416,7 @@ function saveAsPDF() {
                     }
                     else {
                         console.log("Saved active tab as PDF");
-                        browser.tabs.sendMessage(active_tab.id, {tranquility_action: "ResetImageDisplay"});
+                        browser.tabs.sendMessage(active_tab.id, {tranquility_action: "ExecutePostPDFPrintActions"});
                     }
                 };
                 let saving = browser.tabs.saveAsPDF({'shrinkToFit'  : false,

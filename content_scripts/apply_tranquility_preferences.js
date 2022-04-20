@@ -4,7 +4,7 @@
  * cluttered web pages
  **********************************************************************
 
-   Copyright (c) 2012-2021 Arun Kunchithapatham
+   Copyright (c) 2012-2022 Arun Kunchithapatham
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -37,6 +37,7 @@ function applyAllTranquilityPreferences() {
     applyLinkColorPreferences();
     applyAnnotationHighlightColorPreferences();
     applyReadingWidthPreferences();
+    applyNumColumnsPreferences('defaultMode');
     applyTextJustificationPreferences();
     applyLineHeightPreferences();
     applyImageDisplayPreferences();
@@ -184,11 +185,41 @@ function applyReadingWidthPreferences() {
             cdiv.style.width = result.tranquility_reading_width + "%"; 
             menu_div.style.width = result.tranquility_reading_width + "%"; 
             resizeImages(document, result.tranquility_reading_width);
+
         }
     };
 
     let getting = browser.storage.local.get("tranquility_reading_width", onGetting);
- }
+}
+
+
+function applyNumColumnsPreferences(columnMode) {
+    let inner_div = document.getElementById('tranquility_innercontainer');
+
+    // Update the number of columns based on the preference setting
+    let onGetting = function(result) {
+        if (browser.runtime.lastError) {
+            console.log(browser.runtime.lastError);
+        }
+        else {
+            console.log("Applying Num Columns Preferences");
+            let numCols = result.tranquility_num_columns;
+            let readingWidth = result.tranquility_reading_width;
+
+            if (columnMode == 'singlePagePrintMode') {
+                numCols = 1;
+            }
+
+            inner_div.style.columnCount = numCols;
+            inner_div.style.columnRule = "5px solid rgb(127, 127, 127, 0.3)";
+            inner_div.style.columnGap = "2em";
+            resizeImages(document, readingWidth/numCols);
+        }
+    };
+
+    let getting = browser.storage.local.get(["tranquility_reading_width",
+                                             "tranquility_num_columns"], onGetting);
+}
 
 function applyTextJustificationPreferences() {
     // Apply text justification
@@ -253,8 +284,6 @@ function resizeImages(document, reading_width) {
 
 
 function resizeLoadedImage(image, max_width) {    
-    image.removeAttribute('class');
-    image.removeAttribute('style');
 
     let origWidth = image.naturalWidth;
     let origHeight = image.naturalHeight;
@@ -278,10 +307,10 @@ function applyImageDisplayPreferences() {
             console.log("Applying Image Display Preferences");
             if (result.tranquility_hide_images == 'never' ||
                 result.tranquility_hide_images == 'hide_only_for_print') {
-                setImageDisplay(document, 'inline');
+                setImageDisplay('inline');
             }
             else if (result.tranquility_hide_images == 'always') {
-                setImageDisplay(document, 'none');
+                setImageDisplay('none');
             }
         }
     };
@@ -289,7 +318,7 @@ function applyImageDisplayPreferences() {
     let getting = browser.storage.local.get("tranquility_hide_images", onGetting);
 }
 
-function setImageDisplay(document, displayVal) {
+function setImageDisplay(displayVal) {
     //let images = document.getElementsByTagName("IMG");
     let images = document.querySelectorAll("IMG, FIGURE, FIGCAPTION, PICTURE, SVG");
     console.log("Setting display of images... to " + displayVal);

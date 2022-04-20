@@ -4,7 +4,7 @@
  * cluttered web pages
  **********************************************************************
 
-   Copyright (c) 2012-2021 Arun Kunchithapatham
+   Copyright (c) 2012-2022 Arun Kunchithapatham
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -41,6 +41,7 @@ function saveOptions(e) {
         tranquility_font_size:                  document.getElementById("tranquility_font_size").value,
         tranquility_hide_images:                document.getElementById("tranquility_hide_images").value,
         tranquility_reading_width:              document.getElementById("tranquility_reading_width").value,
+        tranquility_num_columns:                document.getElementById("tranquility_num_columns").value,
         tranquility_line_height:                document.getElementById("tranquility_line_height").value,
         tranquility_text_align:                 document.getElementById("tranquility_text_align").value,
         tranquility_pdf_paper_size:             document.getElementById("tranquility_pdf_paper_size").value,
@@ -164,7 +165,7 @@ function restoreOptions() {
     let options_list = ["tranquility_background_color", "tranquility_font_color", 
                       "tranquility_link_color", "tranquility_annotation_highlight_color",
                       "tranquility_font_name", "tranquility_font_size", "tranquility_hide_images",
-                      "tranquility_reading_width", "tranquility_line_height", 
+                      "tranquility_reading_width", "tranquility_num_columns", "tranquility_line_height",
                       "tranquility_text_align", "tranquility_browser_action_icon",
                       "tranquility_pdf_paper_size", "tranquility_pdf_incl_head_foot"];
 
@@ -207,6 +208,9 @@ function restoreOptions() {
                     }
                     else if (opt_name == "tranquility_reading_width") {
                         document.getElementById(elem_name).value = result.tranquility_reading_width || "55";
+                    }
+                    else if (opt_name == "tranquility_num_columns") {
+                        document.getElementById(elem_name).value = result.tranquility_num_columns || "1";
                     }
                     else if (opt_name == "tranquility_line_height") {
                         document.getElementById(elem_name).value = result.tranquility_line_height || "140";

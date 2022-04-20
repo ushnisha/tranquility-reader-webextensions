@@ -4,7 +4,7 @@
  * cluttered web pages
  **********************************************************************
 
-   Copyright (c) 2012-2021 Arun Kunchithapatham
+   Copyright (c) 2012-2022 Arun Kunchithapatham
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -235,8 +235,11 @@ function handleSaveAsPDFClickEvent(event) {
             console.log(browser.runtime.lastError);
         }
         else {
+            if (result.tranquility_num_columns > 1) {
+                applyNumColumnsPreferences('singlePagePrintMode');
+            }
             if (result.tranquility_hide_images == 'hide_only_for_print') {
-                setImageDisplay(document, 'none');
+                setImageDisplay('none');
             }
             browser.runtime.sendMessage(
             {
@@ -245,7 +248,8 @@ function handleSaveAsPDFClickEvent(event) {
         }
     };
 
-    let getting = browser.storage.local.get("tranquility_hide_images", onGetting);
+    let getting = browser.storage.local.get(["tranquility_hide_images",
+                                             "tranquility_num_columns"], onGetting);
 }
 
 function handleShowPreferencesClickEvent(event) {
@@ -367,7 +371,12 @@ function handleClickEvent(event) {
         note.parentNode.removeChild(note);
     }
     else {
-        toggle_ui_controls_visibility();
+        // If no text is selected, then a click event is registered on the empty area
+        // toggle the visibility of the ui related controls/buttons
+        //
+        if (document.getSelection().isCollapsed) {
+            toggle_ui_controls_visibility();
+        }
     }
 }
 

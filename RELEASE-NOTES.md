@@ -1,3 +1,22 @@
+## Version 3.0.24:
+
+* Do not show the ui controls when the user selects any text in the
+  transformed view.  When text is selected, that registers a click event
+  which shows the ui controls and that can be distracting.
+
+* Add a new option for multi-column text support.  The reading width
+  will be split into the specified number of columns.  This is useful
+  for people with wide screens.  However, printing to PDF will always
+  print with a single column.  With multiple columns, if you need to
+  scroll down to finish reading the first column, use HOME key to
+  move to the top of the page to start reading the next column.
+
+* Minor code cleanup and changes to support above enhancements.
+
+* Updated copyright information to year 2022
+
+--------------------------------
+
 ## Version 3.0.23:
 
 * Provide option to hide images when transforming/printing a document.

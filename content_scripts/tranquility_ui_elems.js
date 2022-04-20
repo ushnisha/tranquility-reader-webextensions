@@ -4,7 +4,7 @@
  * cluttered web pages
  **********************************************************************
 
-   Copyright (c) 2012-2021 Arun Kunchithapatham
+   Copyright (c) 2012-2022 Arun Kunchithapatham
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -67,6 +67,7 @@ function create_ui_elements(contentDoc, supporting_links, thisURL) {
         cdiv_inner.appendChild(p_elem.cloneNode(true));
         let bot_nav_links_div = supporting_links["nav_links"].cloneNode(true);
         bot_nav_links_div.setAttribute('id', 'tranquility_nav_links_bot');
+        bot_nav_links_div.style.columnSpan = "all"; // span navigation links across all columns
         cdiv_inner.appendChild(bot_nav_links_div);
     }
     
@@ -168,7 +169,15 @@ function create_ui_elements(contentDoc, supporting_links, thisURL) {
     //
     let original_url_div = createNode(contentDoc, {type: 'DIV', attr: {class:'tranquility_annotation_selection', id:'tranquility_original_url_div' } });
     original_url_div.textContent = "Source : " + thisURL;
+    original_url_div.style.columnSpan = "all"; // span original_url_div across all columns
     cdiv_inner.insertBefore(original_url_div, cdiv_inner.firstChild);
+
+    // span all H1 elements across all columns
+    //
+    let h1_elems = document.documentElement.getElementsByTagName("H1");
+    for(let i=0; i < h1_elems.length; i++) {
+        h1_elems[i].style.columnSpan = "all";
+    }
 
     toggle_ui_controls_visibility();
 

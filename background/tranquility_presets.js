@@ -4,7 +4,7 @@
  * cluttered web pages
  **********************************************************************
 
-   Copyright (c) 2012-2021 Arun Kunchithapatham
+   Copyright (c) 2012-2022 Arun Kunchithapatham
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -36,6 +36,7 @@ let tranquility_presets =
                "tranquility_font_size"                  : "22",
                "tranquility_hide_images"                : "never",
                "tranquility_reading_width"              : "55",
+               "tranquility_num_columns"                : "1",
                "tranquility_line_height"                : "140",
                "tranquility_text_align"                 : "left",
                "tranquility_pdf_paper_size"             : "Letter",
@@ -51,6 +52,7 @@ let tranquility_presets =
                "tranquility_font_size"                  : "15",
                "tranquility_hide_images"                : "never",
                "tranquility_reading_width"              : "95",
+               "tranquility_num_columns"                : "1",
                "tranquility_line_height"                : "140",
                "tranquility_text_align"                 : "left",
                "tranquility_pdf_paper_size"             : "Letter",
@@ -66,6 +68,7 @@ let tranquility_presets =
                "tranquility_font_size"                  : "22",
                "tranquility_hide_images"                : "never",
                "tranquility_reading_width"              : "55",
+               "tranquility_num_columns"                : "1",
                "tranquility_line_height"                : "140",
                "tranquility_text_align"                 : "left",
                "tranquility_pdf_paper_size"             : "Letter",
@@ -81,6 +84,7 @@ let tranquility_presets =
                "tranquility_font_size"                  : "22",
                "tranquility_hide_images"                : "never",
                "tranquility_reading_width"              : "55",
+               "tranquility_num_columns"                : "1",
                "tranquility_line_height"                : "140",
                "tranquility_text_align"                 : "left",
                "tranquility_pdf_paper_size"             : "Letter",
@@ -96,6 +100,7 @@ let tranquility_presets =
                "tranquility_font_size"                  : "22",
                "tranquility_hide_images"                : "never",
                "tranquility_reading_width"              : "55",
+               "tranquility_num_columns"                : "1",
                "tranquility_line_height"                : "140",
                "tranquility_text_align"                 : "left",
                "tranquility_pdf_paper_size"             : "Letter",
@@ -111,6 +116,7 @@ let tranquility_presets =
                "tranquility_font_size"                  : "54",
                "tranquility_hide_images"                : "never",
                "tranquility_reading_width"              : "75",
+               "tranquility_num_columns"                : "1",
                "tranquility_line_height"                : "140",
                "tranquility_text_align"                 : "left",
                "tranquility_pdf_paper_size"             : "Letter",
