@@ -3,6 +3,8 @@
 Tranquility Reader is a Firefox extension that improves the readability 
 of web articles.
 
+It is available on the [official Firefox Addons Repository (AMO)](https://addons.mozilla.org/firefox/addon/tranquility-1/).
+
 Tranquility removes unnecessary elements in a webpage, and provides 
 a simple and tranquil reading experience. Similar functionality is 
 available through Readability or iReader or "Reader Mode" in Firefox. 
