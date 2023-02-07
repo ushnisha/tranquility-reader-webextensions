@@ -585,6 +585,10 @@ function processContentDoc(contentDoc, thisURL, saveOffline) {
     removeAnchorAttributes(contentDoc);
     console.log("Removed Anchor attributes");
 
+    // Process images that are remaining on the tranquilized page
+    processImages(contentDoc.body);
+    console.log("Processed images")
+
     // Create the tranquility UI related elements
     create_ui_elements(contentDoc, supporting_links, thisURL);
     console.log("Created Tranquility UI elements");
@@ -1110,7 +1114,18 @@ function cloneImages(cdoc, collection) {
         img.alt = images[i].alt;
 
         collection[idx] = img;
-        console.log(images[i].src + ": " + images[i].alt);
+        console.log("cloning image: ", img.src + " : " + img.alt);
+    }
+}
+
+function processImages(cdoc) {
+    let images = cdoc.getElementsByTagName('IMG');
+
+    for (let i = 0; i < images.length; i++) {
+        // if there is a missing source, try to get it from data-src attribute
+        if (!images[i].src && images[i].hasAttribute('data-src')) {
+            images[i].src = images[i].getAttribute('data-src')
+        }
     }
 }
 
