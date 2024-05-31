@@ -4,7 +4,7 @@
  * cluttered web pages
  **********************************************************************
 
-   Copyright (c) 2012-2022 Arun Kunchithapatham
+   Copyright (c) 2012-2024 Arun Kunchithapatham
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -138,7 +138,7 @@ function create_ui_elements(contentDoc, supporting_links, thisURL) {
     // Add a button to save page as PDF file
     //
     console.log(osVersion);
-    if (osVersion != null && osVersion != 'mac' && osVersion != 'android') {
+    if (osVersion != null && osVersion != 'android') {
         console.log("Adding Save as PDF icon...");
         let saveaspdf_div = createNode(contentDoc, {type: 'DIV', attr: {class:'tranquility_saveaspdf_div', id:'tranquility_saveaspdf_div' } });
         saveaspdf_div.setAttribute('title', browser.i18n.getMessage("saveaspdf"));

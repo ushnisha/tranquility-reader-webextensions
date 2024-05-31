@@ -4,7 +4,7 @@
  * cluttered web pages
  **********************************************************************
 
-   Copyright (c) 2012-2022 Arun Kunchithapatham
+   Copyright (c) 2012-2024 Arun Kunchithapatham
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -52,8 +52,6 @@ div.tranquility_container
   width:70%;
   font-family:Univers,Scala,Georgia,Verdana,Times,Helvetica; 
   text-align:justify;
-  line-height:140%;  
-  /*border-radius: 20px;*/
 }
 
 div.tranquility_innercontainer 
@@ -65,14 +63,12 @@ div.tranquility_innercontainer
   margin-top: 60px;
   font-family:Univers,Scala,Georgia,Verdana,Times,Helvetica; 
   text-align:justify;
-  line-height:140%;
 }  
 
 div.tranquility 
 {
   font-family:Univers,Scala,Georgia,Verdana,Times,Helvetica; 
   text-align:justify;
-  line-height:140%;  
   padding-top: 5px;
   padding-bottom: 5px;
 } 
@@ -86,7 +82,6 @@ div.tranquility_links
   font-family:Univers,Scala,Georgia,Verdana,Times,Helvetica; 
   font-size:18px;
   text-align:left; 
-  line-height:140%;  
   border-left: solid 2px silver;
   border-top: solid 2px silver;
   border-bottom: solid 2px silver;
@@ -112,7 +107,6 @@ div.tranquility_offline_links
   font-family:Univers,Scala,Georgia,Verdana,Times,Helvetica; 
   font-size:18px;
   text-align:left; 
-  line-height:140%;  
   border-left: solid 2px silver;
   border-top: solid 2px silver;
   border-bottom: solid 2px silver;
@@ -137,7 +131,6 @@ div.tranquility_nav_links
   padding-right: 15px;
   font-family:Univers,Scala,Georgia,Verdana,Times,Helvetica; 
   text-align:right; 
-  line-height:140%;  
   border-left: solid 2px silver;
   border-top: solid 2px silver;
   border-bottom: solid 2px silver;
@@ -152,28 +145,24 @@ span.tranquility
 {
   font-family:Univers,Scala,Georgia,Verdana,Times,Helvetica; 
   text-align:justify;
-  line-height:140%;  
 } 
 
 table.tranquility 
 {
   font-family:Univers,Scala,Georgia,Verdana,Times,Helvetica; 
   text-align:justify;
-  line-height:140%;  
 } 
 
 p.tranquility 
 { 
   font-family:Univers,Scala,Georgia,Verdana,Times,Helvetica; 
   text-align:justify;
-  line-height:140%;  
 } 
 
 pre.tranquility_pre
 {
   width: 100%;
   overflow: auto;
-  line-height:140%;  
   white-space: pre-wrap;
   word-break: keep-all;
   border: solid 1px silver;
@@ -185,14 +174,12 @@ li.tranquility
 { 
   font-family:Univers,Scala,Georgia,Verdana,Times,Helvetica; 
   text-align:justify;
-  line-height:140%;  
 } 
 
 font.tranquility 
 { 
   font-family:Univers,Scala,Georgia,Verdana,Times,Helvetica;
   text-align:justify;
-  line-height:140%;  
 } 
 
 div.tranquility_more_links_btn
@@ -324,7 +311,6 @@ span.tranquility_annotation
 {
   font-family:Univers,Scala,Georgia,Verdana,Times,Helvetica; 
   text-align:justify;
-  line-height:140%;  
   padding-bottom: 1px;
 }
 
@@ -332,7 +318,6 @@ span.tranquility_annotation_selection
 {
   font-family:Univers,Scala,Georgia,Verdana,Times,Helvetica; 
   text-align:justify;
-  line-height:140%;  
   padding-bottom: 1px;
 }
 
@@ -358,7 +343,6 @@ div.tranquility_annotation_entry
 {
   font-family:Univers,Scala,Georgia,Verdana,Times,Helvetica; 
   text-align:center;
-  line-height:140%;  
   border-left: solid 5px silver;
   border-top: solid 5px silver;
   border-bottom: solid 5px silver;
@@ -375,7 +359,6 @@ div.tranquility_annotation_note
 {
   font-family:Univers,Scala,Georgia,Verdana,Times,Helvetica; 
   text-align:justify;
-  line-height:140%;  
   border-left: solid 5px silver;
   border-top: solid 5px silver;
   border-bottom: solid 5px silver;
@@ -398,7 +381,6 @@ div.tranquility_view_notes
 {
   font-family:Univers,Scala,Georgia,Verdana,Times,Helvetica; 
   text-align:justify;
-  line-height:140%;  
   border-left: solid 5px silver;
   border-top: solid 5px silver;
   border-bottom: solid 5px silver;
@@ -419,7 +401,6 @@ div.tranquility_add_annotation
 {
   font-family:Univers,Scala,Georgia,Verdana,Times,Helvetica; 
   text-align:justify;
-  line-height:140%;  
   border-left: solid 5px silver;
   border-top: solid 5px silver;
   border-bottom: solid 5px silver;

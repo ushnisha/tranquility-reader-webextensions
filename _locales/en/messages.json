@@ -199,6 +199,12 @@
   "readLaterNotSupportedString" : {
     "message"     : "'Read Later' functionality is not supported in Private Browsing Mode",
     "description" : "IndexedDB is not available in the Private browsing mode"
+  },
+
+  "extensionShowOptionsWindowFromToolsMenu" : {
+    "message"     : "Tranquility Preferences",
+    "description" : "English description for displaying Tranquility Reading options/settings window on clicking item in tools menu through right click on toolbar icon"
   }
+
 }
   

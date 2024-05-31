@@ -4,7 +4,7 @@
  * cluttered web pages
  **********************************************************************
 
-   Copyright (c) 2012-2022 Arun Kunchithapatham
+   Copyright (c) 2012-2024 Arun Kunchithapatham
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -470,7 +470,7 @@ function processContentDoc(contentDoc, thisURL, saveOffline) {
     // since it is easier to undo the cleanup in javascript or add logic to skip
     // certain elements that seem to have actual content in them
     //
-    let unlikelyCandidates = /^social|soc|^header|footer|related|recommended|sponsored|action|navigation|promo|adCaption|comment|dfp|adHolder|billboard|slide|-ad-|_ad_|control-bar|menu|disqus|popup|pop-up|crumb|more-stories/i
+    let unlikelyCandidates = /^social|soc|sharetools|sharebuttons|share-buttons|^header|footer|related|recommended|sponsored|action|navigation|promo|adCaption|comment|dfp|adHolder|billboard|slide|_ad_|adtext|control-bar|menu|disqus|popup|pop-up|crumb|more-stories|sidebar|banner|softwall|paywall|playlist/i
     let nodeIter = getNodeIterator(contentDoc.body, unlikelyCandidates, "className");
     let node = null;
     while ((node = nodeIter.nextNode())) {
@@ -585,6 +585,11 @@ function processContentDoc(contentDoc, thisURL, saveOffline) {
     removeAnchorAttributes(contentDoc);
     console.log("Removed Anchor attributes");
 
+    // Remove any overflow properties
+    //
+    removeOverflowAttributes(contentDoc);
+    console.log("Removed Overflow Attributes");
+
     // Create the tranquility UI related elements
     create_ui_elements(contentDoc, supporting_links, thisURL);
     console.log("Created Tranquility UI elements");
@@ -684,7 +689,13 @@ function deleteHiddenElements(cdoc, tagString) {
 
         if(((cssVisibility != undefined) && (cssVisibility == 'hidden')) ||
            ((cssDisplay != undefined) && (cssDisplay == 'none'))) {
-            elems[i].parentNode.removeChild(elems[i]);
+            let elemSize = computeSize(elems[i]);
+            if (elemSize > 20) { // hidden element has text content and may be premium content hidden
+                continue;
+            }
+            else {
+                elems[i].parentNode.removeChild(elems[i]);
+            }
         }
     }
 }
@@ -1054,6 +1065,16 @@ function removeAnchorAttributes(cdoc) {
         // Add all links to the 'tranquil_mode_links' to enable continuous browsing
         c[i].setAttribute('class', 'tranquil_browsing_mode_link');
     }    
+}
+
+function removeOverflowAttributes(cdoc) {
+    let elems = cdoc.getElementsByTagName("*");
+
+    for (let i = 0; i < elems.length; i++) {
+	if (elems[i].getAttribute('overflow')) {
+	    elems[i].setAttribute('overflow', 'visible');
+	}
+    }
 }
 
 function createNode(cdoc, props) {

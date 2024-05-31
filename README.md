@@ -62,7 +62,7 @@ Refer to [this wiki page](https://github.com/ushnisha/tranquility-reader-webexte
 ## License & Copyright:
 
 Tranquility is provided under GPLv3 license.
-Copyright (C) 2012-2022 Arun Kunchithapatham
+Copyright (C) 2012-2024 Arun Kunchithapatham
 
 ## Privacy Policy:
 

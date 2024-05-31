@@ -4,7 +4,7 @@
  * cluttered web pages
  **********************************************************************
 
-   Copyright (c) 2012-2022 Arun Kunchithapatham
+   Copyright (c) 2012-2024 Arun Kunchithapatham
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -307,14 +307,19 @@ function handleClickEvent(event) {
         // Do not load link - instead request background page to load it and then
         // run tranquility
         else {
-            event.preventDefault();
-            event.stopPropagation();
-            console.log("Entered click event of more links link....");
-            console.log(urlStr);
-            currentURL = urlStr;
-            let pbar = getProgressBar(document);
-            pbar.style.visibility = 'visible';
-            processXMLHTTPRequest(currentURL, false);
+	    if (event.ctrlKey || event.metaKey) { // event.metaKey for macOS support
+                console.log("User performed Ctrl+Click on a link... allow browser default behaviour");
+	    }
+	    else {
+                event.preventDefault();
+                event.stopPropagation();
+                console.log("Entered click event of more links link....");
+                console.log(urlStr);
+                currentURL = urlStr;
+                let pbar = getProgressBar(document);
+                pbar.style.visibility = 'visible';
+                processXMLHTTPRequest(currentURL, false);
+	    }
         }
     }
     else if((document.getElementById('tranquility_links') != undefined) &&

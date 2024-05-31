@@ -4,7 +4,7 @@
  * cluttered web pages
  **********************************************************************
 
-   Copyright (c) 2012-2022 Arun Kunchithapatham
+   Copyright (c) 2012-2024 Arun Kunchithapatham
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -63,7 +63,7 @@ let tranquility_presets =
              { "tranquility_background_color"           : "#333333",
                "tranquility_font_color"                 : "#EEEEEE",
                "tranquility_link_color"                 : "#DD4800",
-               "tranquility_annotation_highlight_color" : "#FFFF99",
+               "tranquility_annotation_highlight_color" : "#8A9A5B",
                "tranquility_font_name"                  : "Georgia",
                "tranquility_font_size"                  : "22",
                "tranquility_hide_images"                : "never",
@@ -111,7 +111,7 @@ let tranquility_presets =
              { "tranquility_background_color"           : "#000000",
                "tranquility_font_color"                 : "#FFFFFF",
                "tranquility_link_color"                 : "#0000FF",
-               "tranquility_annotation_highlight_color" : "#FFFF99",
+               "tranquility_annotation_highlight_color" : "#8A9A5B",
                "tranquility_font_name"                  : "Verdana",
                "tranquility_font_size"                  : "54",
                "tranquility_hide_images"                : "never",

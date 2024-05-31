@@ -1,18 +1,18 @@
 {
 
-    "manifest_version": 2,
+    "manifest_version": 3,
     "name": "__MSG_extensionName__",
-    "version": "3.0.24",
+    "version": "3.0.25",
 
     "description": "__MSG_extensionDescription__",
-    "homepage_url": "https://tranquility.ushnisha.com/",
+    "homepage_url": "https://github.com/ushnisha/tranquility-reader-webextensions",
 
-    "applications": {
-        "gecko": {
-          "id": "tranquility@ushnisha.com",
-          "strict_min_version": "79.0"
-        }
-    },
+    "browser_specific_settings": {
+       "gecko": {
+         "id": "tranquility@ushnisha.com",
+         "strict_min_version": "109.0"
+       }
+   },
 
     "icons": {
         "32": "icons/tranquility-32.png",
@@ -21,21 +21,30 @@
     },
 
     "permissions": [
-        "<all_urls>",
         "activeTab",
+	"scripting",
         "storage",
         "alarms",
         "contextMenus"
     ],
 
-    "browser_action": {
+    "host_permissions": [
+        "<all_urls>"
+    ],
+
+    "action": {
         "default_icon": "icons/tranquility-32.png",
         "default_title": "__MSG_extensionBrowserActionTitle__"
     },
-    
+
     "web_accessible_resources": [
-        "css/tranquility.css",
-        "icons/*.png"
+	{
+	    "resources": [
+                "css/tranquility.css",
+                "icons/*.png"
+	    ],
+	    "matches": ["<all_urls>"]
+	}
     ],
 
     "options_ui": {
@@ -44,11 +53,11 @@
     },
 
     "background": {
-      "scripts": ["background/tranquility_bg_db_interface.js", 
-                  "background/tranquility_bg_message_manager.js",
-                  "background/tranquility_presets.js",
-                  "background/tranquility_bg_common_functions.js",
-                  "background/tranquility_bg_context_menu.js"]
+        "scripts": ["background/tranquility_bg_db_interface.js",
+                    "background/tranquility_bg_message_manager.js",
+                    "background/tranquility_presets.js",
+                    "background/tranquility_bg_common_functions.js",
+                    "background/tranquility_bg_context_menu.js"]
     },
       
     "commands": {

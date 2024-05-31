@@ -1,3 +1,27 @@
+## Version 3.0.25:
+
+* Updated extension to Manifest v3.
+
+* Added context menu on action icon; right click will give access to
+  preferences page
+
+* Context menu creation code moved under the runtime.onInstalled handler
+  for Manifest v3.
+
+* Modified annotation colors for some presets to improve contrast/readability.
+
+* Allow default browser behavior on Ctrl+Click on a link in the tranquilized
+  view.
+
+* Improvements to handling ads on certain pages
+
+* Remove overflow attributes if any to allow scrolling on some pages
+
+* Improve handling of hidden content on certain websites that hide part
+  of the article.
+
+* Updated copyright information to year 2024
+
 ## Version 3.0.24:
 
 * Do not show the ui controls when the user selects any text in the
