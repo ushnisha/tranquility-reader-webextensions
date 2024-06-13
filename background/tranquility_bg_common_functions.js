@@ -105,13 +105,13 @@ function insertContentScriptsAndCSSAndAction(tabId, action) {
     console.log("Inserting Scrips and CSS into tabId: " + tabId);
     let success = true;
 
-    let p1 = browser.scripting.insertCSS({target: {tabId: tabId}, files: ["/css/tranquility.css"]});
-    let p2 = browser.scripting.executeScript({target: { tabId: tabId}, files: ["/content_scripts/tranquilize.js"]});
-    let p3 = browser.scripting.executeScript({target: {tabId: tabId}, files: ["/content_scripts/apply_tranquility_preferences.js"]});
-    let p4 = browser.scripting.executeScript({target: {tabId: tabId}, files: ["/content_scripts/tranquility_annotations.js"]});
-    let p5 = browser.scripting.executeScript({target: {tabId: tabId}, files: ["/content_scripts/tranquility_offline_content.js"]});
-    let p6 = browser.scripting.executeScript({target: {tabId: tabId}, files: ["/content_scripts/tranquility_event_handlers.js"]});
-    let p7 = browser.scripting.executeScript({target: {tabId: tabId}, files: ["/content_scripts/tranquility_ui_elems.js"]});
+    let p1 = browser.tabs.insertCSS(tabId, { matchAboutBlank: true, file: "/css/tranquility.css", runAt: "document_end"});
+    let p2 = browser.tabs.executeScript(tabId, { matchAboutBlank: true, file: "/content_scripts/tranquilize.js", runAt: "document_end"});
+    let p3 = browser.tabs.executeScript(tabId, { matchAboutBlank: true, file: "/content_scripts/apply_tranquility_preferences.js", runAt: "document_end"});
+    let p4 = browser.tabs.executeScript(tabId, { matchAboutBlank: true, file: "/content_scripts/tranquility_annotations.js", runAt: "document_end"});
+    let p5 = browser.tabs.executeScript(tabId, { matchAboutBlank: true, file: "/content_scripts/tranquility_offline_content.js", runAt: "document_end"});
+    let p6 = browser.tabs.executeScript(tabId, { matchAboutBlank: true, file: "/content_scripts/tranquility_event_handlers.js", runAt: "document_end"});
+    let p7 = browser.tabs.executeScript(tabId, { matchAboutBlank: true, file: "/content_scripts/tranquility_ui_elems.js", runAt: "document_end"});
 
     Promise.all([p1, p2, p3, p4, p5, p6, p7]).then(
         function () { 
@@ -269,7 +269,7 @@ function changeBrowserActionIcon(iconname) {
 
     let iconfile = getIconFile(iconname);
 
-    let changing = browser.action.setIcon({"path": "icons/" + iconfile}, onChanging);
+    let changing = browser.browserAction.setIcon({"path": "icons/" + iconfile}, onChanging);
 }
 
 // On installation check to see if an option is gettable; if not, set that option
@@ -302,10 +302,6 @@ function handleInstalled(details) {
 		         JSON.stringify(tranquility_presets));
 
     });
-
-    console.log("Creating context menus during installation....");
-    createContextMenus();
-  
 }
 
 function initializeOption(opt_name, opt_value) {
@@ -349,7 +345,7 @@ function setBrowserActionIcon() {
                 console.log(result.tranquility_browser_action_icon);
                 let iconfile = getIconFile(result.tranquility_browser_action_icon);
                 console.log(iconfile);
-                let setting = browser.action.setIcon({"path": "icons/" + iconfile}, onSetting);
+                let setting = browser.browserAction.setIcon({"path": "icons/" + iconfile}, onSetting);
             }
         }
     }
@@ -461,6 +457,6 @@ function handleStartup() {
     setBrowserActionIcon();
 }
 
-browser.action.onClicked.addListener(browserAction);
+browser.browserAction.onClicked.addListener(browserAction);
 browser.runtime.onInstalled.addListener(handleInstalled);
 browser.runtime.onStartup.addListener(handleStartup);

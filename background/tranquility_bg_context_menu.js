@@ -34,58 +34,54 @@ let addNoteStr = browser.i18n.getMessage("extensionAddTranquilityAnnotationFromC
 let runOnSelStr = browser.i18n.getMessage("extensionRunTranquilityOnSelectionFromContextMenu");
 let showOptionsStr = browser.i18n.getMessage("extensionShowOptionsWindowFromToolsMenu");
 
-function createContextMenus() { // called from the runtime.onInstalled handler function in
-	                        // tranquility_bg_common_functions.js
+// browser.contextMenus API not supported on AndroidOS
+//
+let gettingInfoPOS = browser.runtime.getPlatformInfo(function (info) {
+    if (info.os != "android") {
+        browser.contextMenus.create({
+          id: "run_tranquility",
+          title: runStr,
+          type: "normal",
+          contexts: ["link"]
+        });
 
-    // browser.contextMenus API not supported on AndroidOS
-    //
-    let gettingInfoPOS = browser.runtime.getPlatformInfo(function (info) {
-        if (info.os != "android") {
-            browser.contextMenus.create({
-              id: "run_tranquility",
-              title: runStr,
-              type: "normal",
-              contexts: ["link"]
-            });
+        browser.contextMenus.create({
+          id: "add_tranquility_note",
+          title: addNoteStr,
+          type: "normal",
+          contexts: ["selection"]
+        });
 
-            browser.contextMenus.create({
-              id: "add_tranquility_note",
-              title: addNoteStr,
-              type: "normal",
-              contexts: ["selection"]
-            });
+        browser.contextMenus.create({
+          id: "run_tranquility_on_selection",
+          title: runOnSelStr,
+          type: "normal",
+          contexts: ["selection"]
+        });
 
-            browser.contextMenus.create({
-              id: "run_tranquility_on_selection",
-              title: runOnSelStr,
-              type: "normal",
-              contexts: ["selection"]
-            });
+        browser.contextMenus.create({
+          id: "show_tranquility_options",
+          title: showOptionsStr,
+          type: "normal",
+          contexts: ["browser_action"]
+        });
 
-            browser.contextMenus.create({
-              id: "show_tranquility_options",
-              title: showOptionsStr,
-              type: "normal",
-              contexts: ["action"]
-            });
-
-            browser.contextMenus.onClicked.addListener(function(info, tab) {
-                if (info.menuItemId == "run_tranquility") {
-                    loadLinkAndRunTranquility(info.linkUrl, "Run");
-                }
-                else if (info.menuItemId == "add_tranquility_note") {
-                    console.log("Right click context menu triggered for adding annotation...");
-                    addTranquilityAnnotation();
-                }
-                else if (info.menuItemId == "run_tranquility_on_selection") {
-                    console.log("Right click context menu triggered for running tranquility on selection...");
-                    runTranquilityOnSelection();
-                }
-                else if (info.menuItemId == "show_tranquility_options") {
-                    console.log("Right click context menu from tools menu to show options page...");
-                    openOptionsPage();
-                }
-            });
-        }
-    });
-}
+        browser.contextMenus.onClicked.addListener(function(info, tab) {
+            if (info.menuItemId == "run_tranquility") {
+                loadLinkAndRunTranquility(info.linkUrl, "Run");
+            }
+            else if (info.menuItemId == "add_tranquility_note") {
+                console.log("Right click context menu triggered for adding annotation...");
+                addTranquilityAnnotation();
+            }
+            else if (info.menuItemId == "run_tranquility_on_selection") {
+                console.log("Right click context menu triggered for running tranquility on selection...");
+                runTranquilityOnSelection();
+            }
+            else if (info.menuItemId == "show_tranquility_options") {
+                console.log("Right click context menu from tools menu to show options page...");
+                openOptionsPage();
+            }
+        });
+    }
+});

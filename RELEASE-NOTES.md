@@ -1,3 +1,9 @@
+## Version 3.0.26:
+
+* Restored extension to Manifest v2 due to regression issues
+
+* Typo in variable name fixed (bug found during testing)
+
 ## Version 3.0.25:
 
 * Updated extension to Manifest v3.

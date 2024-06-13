@@ -1,18 +1,18 @@
 {
 
-    "manifest_version": 3,
+    "manifest_version": 2,
     "name": "__MSG_extensionName__",
-    "version": "3.0.25",
+    "version": "3.0.26",
 
     "description": "__MSG_extensionDescription__",
     "homepage_url": "https://github.com/ushnisha/tranquility-reader-webextensions",
 
     "browser_specific_settings": {
-       "gecko": {
-         "id": "tranquility@ushnisha.com",
-         "strict_min_version": "109.0"
-       }
-   },
+        "gecko": {
+          "id": "tranquility@ushnisha.com",
+          "strict_min_version": "79.0"
+        }
+    },
 
     "icons": {
         "32": "icons/tranquility-32.png",
@@ -21,30 +21,21 @@
     },
 
     "permissions": [
+        "<all_urls>",
         "activeTab",
-	"scripting",
         "storage",
         "alarms",
         "contextMenus"
     ],
 
-    "host_permissions": [
-        "<all_urls>"
-    ],
-
-    "action": {
+    "browser_action": {
         "default_icon": "icons/tranquility-32.png",
         "default_title": "__MSG_extensionBrowserActionTitle__"
     },
 
     "web_accessible_resources": [
-	{
-	    "resources": [
-                "css/tranquility.css",
-                "icons/*.png"
-	    ],
-	    "matches": ["<all_urls>"]
-	}
+        "css/tranquility.css",
+        "icons/*.png"
     ],
 
     "options_ui": {
@@ -53,11 +44,11 @@
     },
 
     "background": {
-        "scripts": ["background/tranquility_bg_db_interface.js",
-                    "background/tranquility_bg_message_manager.js",
-                    "background/tranquility_presets.js",
-                    "background/tranquility_bg_common_functions.js",
-                    "background/tranquility_bg_context_menu.js"]
+      "scripts": ["background/tranquility_bg_db_interface.js",
+                  "background/tranquility_bg_message_manager.js",
+                  "background/tranquility_presets.js",
+                  "background/tranquility_bg_common_functions.js",
+                  "background/tranquility_bg_context_menu.js"]
     },
       
     "commands": {

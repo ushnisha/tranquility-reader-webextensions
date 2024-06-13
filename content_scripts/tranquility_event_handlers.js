@@ -359,7 +359,7 @@ function handleClickEvent(event) {
                 
                 let btn = document.getElementById('tranquility_offline_links_btn');
                 let url =  btn.getAttribute('data-active-link');
-                saveContentOffline(url, documentument.cloneNode(true));                    
+                saveContentOffline(url, document.cloneNode(true));
             }
         }
         else {
