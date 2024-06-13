@@ -1068,13 +1068,9 @@ function removeAnchorAttributes(cdoc) {
 }
 
 function removeOverflowAttributes(cdoc) {
-    let elems = cdoc.getElementsByTagName("*");
-
-    for (let i = 0; i < elems.length; i++) {
-	if (elems[i].getAttribute('overflow')) {
-	    elems[i].setAttribute('overflow', 'visible');
-	}
-    }
+    cdoc.querySelectorAll('[overflow]').forEach((element) => {
+	element.setAttribute('overflow', 'visible');    
+    });
 }
 
 function createNode(cdoc, props) {
